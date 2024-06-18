@@ -45,6 +45,7 @@
 </html>
 
 <script>
+    //TODO: コード整理
     document.addEventListener('DOMContentLoaded', function () {
         fetch('./components/header.html')
             .then(res => res.text())
@@ -58,7 +59,7 @@
     })
     async function main() {
         console.log('Fetching...')
-        const cookie = getToken()
+        const cookie = getAccToken()
         console.log('cookie:' + cookie)
         const res = await fetch('https://p-dev.ringoxd.dev/auth/info', {
             method: 'GET',
@@ -69,6 +70,7 @@
                 'X-Token': cookie
             },
         })
+        
         if (res.status !== 200) {
             append('Login', false)
         } else {
@@ -89,10 +91,17 @@
     function goLogin() {
         location.href = '../login/index.html'
     }
-    function getToken(x) {
+    function getAccToken() {
         const cookieValue = document.cookie
             .split("; ")
-            .find((row) => row.startsWith(`AuthT=`))
+            .find((row) => row.startsWith(`AccT=`))
+            ?.split("=")[1];
+        return cookieValue
+    }
+    function getRefToken() {
+        const cookieValue = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith(`RefT=`))
             ?.split("=")[1];
         return cookieValue
     }
