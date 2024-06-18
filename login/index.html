@@ -110,10 +110,11 @@
         console.log(res.status)
         const json = await res.json()
         console.log(json)
+        console.log(json.t)
         //login check
         if (res.status === 200) {
             console.log('Success')
-            document.cookie = `t=${json.t}`
+            document.cookie = `AuthT=${json.t}; path=/`
             showresult(true)
             await delay(1000)
     
