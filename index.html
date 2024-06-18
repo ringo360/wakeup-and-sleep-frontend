@@ -58,18 +58,23 @@
     })
     async function main() {
         console.log('Fetching...')
+        const cookie = getCookie('X-Token')
+        console.log('cookie:' + cookie)
         const res = await fetch('https://p-dev.ringoxd.dev/auth/info', {
             method: 'GET',
             mode: 'cors',
             cache: "no-cache",
             headers: {
-                'User-Agent': 'WakeApp/1.0'
+                'User-Agent': 'WakeApp/1.0',
+                'X-Token': cookie
             },
         })
-        const json = await res.json()
-        console.log(json)
-        if (res.status === 2000) append(json.user)
-        else append('Login', false)
+        if (res.status !== 200) {
+            append('Login', false)
+        } else {
+            const json = await res.json()
+            console.log(json)
+        }
     }
     async function append(x, is) {
         console.log('Appending...')
@@ -82,6 +87,13 @@
     }
     function goLogin() {
         location.href = '../login/index.html'
+    }
+    function getCookie(x) {
+        const cookieValue = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith(`${x}=`))
+            ?.split("=")[1];
+        return cookieValue
     }
 </script>
 

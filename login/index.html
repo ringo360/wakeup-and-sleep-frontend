@@ -108,9 +108,12 @@
             body: formBody
         })
         console.log(res.status)
+        const json = await res.json()
+        console.log(json)
         //login check
         if (res.status === 200) {
             console.log('Success')
+            document.cookie = `t=${json.t}`
             showresult(true)
             await delay(1000)
     
