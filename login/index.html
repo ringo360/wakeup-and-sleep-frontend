@@ -113,9 +113,21 @@
         console.log(json.t)
         //login check
         if (res.status === 200) {
-            console.log('Success')
-            document.cookie = `AuthT=${json.t}; path=/`
             showresult(true)
+            console.log('Success')
+            document.cookie = `RefT=${json.t}; path=/`
+            const acc_res = await fetch('https://p-dev.ringoxd.dev/auth/acctoken', {
+                method: 'POST',
+                mode: 'cors',
+                cache: "no-cache",
+                headers: {
+                    'User-Agent': 'WakeApp/1.0',
+                    'X-Token': json.t
+                },
+                body: formBody
+            })
+            const acc_json = await acc_res.json()
+            document.cookie = `AccT=${acc_json.t}; path=/`
             await delay(1000)
     
         } else {
