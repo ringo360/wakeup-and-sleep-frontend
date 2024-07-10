@@ -1,1 +1,2 @@
-//idk
+console.log('Called auth.js')
+
