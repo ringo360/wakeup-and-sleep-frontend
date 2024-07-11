@@ -116,7 +116,7 @@
         if (res.status === 200) {
             console.log('Success')
             document.cookie = `RefT=${json.t}; path=/`
-            await delay(500)
+            // await delay(500) delay
             const acc_res = await fetch('https://p-dev.ringoxd.dev/auth/acctoken', {
                 method: 'GET',
                 headers: {
