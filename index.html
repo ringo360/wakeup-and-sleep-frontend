@@ -106,7 +106,7 @@
         console.log('Appending...')
         const elem = document.getElementById('user')
         if (is === true) {
-            elem.insertAdjacentHTML('afterbegin', `<p>${x}</p>`)
+            elem.insertAdjacentHTML('afterbegin', `<p>${x} | <a onclick="logout()">Logout</a></p>`)
         } else {
             elem.insertAdjacentHTML('afterbegin', `<p><a href='../login/index.html'>Login</a></p>`)
         }
@@ -128,6 +128,29 @@
             ?.split("=")[1];
         return cookieValue
     }
+    async function logout() {
+        await fetch('https://p-dev.ringoxd.dev/auth/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'User-Agent': 'WakeApp/1.0',
+            },
+            body: {
+                't': await getAccToken()
+            }
+        })
+        await fetch('https://p-dev.ringoxd.dev/auth/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'User-Agent': 'WakeApp/1.0',
+            },
+            body: {
+                't': await getRefToken()
+            }
+        })
+        location.href = '/'
+    }
 </script>
 
 <style>
@@ -136,6 +159,7 @@
       text-decoration: none;
     }
     a:hover {
-     color: aqua
+     color: aqua;
+     cursor: pointer;
     }
 </style>
