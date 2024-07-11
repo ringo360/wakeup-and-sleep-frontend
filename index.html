@@ -78,8 +78,8 @@
         if (res.status !== 200) {
             fail++;
             if (res.status === 401) {
-                if (fail >= 3) return append('Login', false);
-                
+                if (fail >= 1) return append('Login', false);
+
                 console.log('Failed. trying again...')
                 const acc_res = await fetch('https://p-dev.ringoxd.dev/auth/acctoken', {
                     method: 'GET',
@@ -91,6 +91,8 @@
                 })
                 const acc_json = await acc_res.json()
                 document.cookie = `AccT=${acc_json.t}; path=/`
+                main()
+                return;
             } else {
                 append('Login', false)
             }
