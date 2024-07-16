@@ -1,4 +1,16 @@
-console.log('Called')
+console.log('Called!')
+document.addEventListener('DOMContentLoaded', function () {
+    fetch('./components/header.html')
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById('header').innerHTML = html;
+            main()
+        })
+        .catch(e => {
+            console.error('Failed to fetch header', e)
+        })
+})
+
 
 function wait(time) {
     return new Promise( (resolve) => {
