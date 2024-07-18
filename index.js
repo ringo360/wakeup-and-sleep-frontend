@@ -77,6 +77,7 @@ async function sleep(x) {
     sleep_alr = true;
     console.log('Set')
     // x.value = 'It works!'
+    addList()
     x.textContent = '🔥It works!'
     sleeping = true;
     await wait(2000)
@@ -93,6 +94,7 @@ async function wakeup(x) {
     }
     wakeup_alr = true;
     console.log('Set')
+    addList()
     x.textContent = '🔥It works!'
     sleeping = false;
     await wait(2000)
@@ -102,5 +104,31 @@ async function wakeup(x) {
 }
 
 async function addList() {
-    //
+    console.log(sleeping)
+    if (sleeping === true) {
+        console.log('fetch......')
+        const row = document.getElementById('lastsleep')
+        if (row) {
+            row.insertAdjacentHTML('beforeend', `<td>5:30</td>`)
+            row.removeAttribute('id')
+        } else {
+            console.error('oops')
+        }
+    } else {
+        const elem = document.getElementById('slog')
+        elem.insertAdjacentHTML(`beforeend`, `<tr id='lastsleep'><td>2024/04/27</td><td id='start'>22:53</td></tr>`)
+        shouldRemove()
+        //削除
+        // document.getElementById('slog').firstElementChild.children[1].remove()
+    }
+}
+
+async function shouldRemove() {
+    const rowCount = document.getElementById('slog')
+    const len = rowCount.childNodes.length -1
+    console.log(len)
+    if (len > 7) {
+        console.log('Removing')
+        document.getElementById('slog').firstElementChild.children[1].remove()
+    }
 }
