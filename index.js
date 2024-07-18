@@ -1,16 +1,46 @@
-console.log('Called!')
-document.addEventListener('DOMContentLoaded', function () {
-    fetch('./components/header.html')
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById('header').innerHTML = html;
-            main()
-        })
-        .catch(e => {
-            console.error('Failed to fetch header', e)
-        })
-})
+console.log('Called Index')
 
+let sleeping = false;
+let sleep_alr = false;
+let wakeup_alr = false;
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log('DOM Loaded')
+        caller()
+    })
+} else {
+    caller()
+}
+
+let called = false;
+async function caller() {
+    if (called === true) return;
+    console.log('Calling 🚀')
+    called = true;
+    loadheader()
+    main()
+    callbtn()
+}
+async function loadheader() {
+    fetch('./components/header.html')
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('header').innerHTML = html;
+                caller()
+            })
+            .catch(e => {
+                console.error('Failed to fetch header', e)
+            })
+} 
+
+async function callbtn() {
+    console.log('Loading btn')
+    const x = document.getElementById('btn')
+    console.log(x)
+    if (sleeping) x.textContent = '就寝'
+    else x.textContent = '起床'
+}
 
 function wait(time) {
     return new Promise( (resolve) => {
@@ -22,8 +52,22 @@ const button = document.getElementById('sleep');
 button.addEventListener('click', sleep(this))
 */
 
-let sleep_alr = false;
-let wakeup_alr = false;
+async function fire(x) {
+    if (sleeping === true) {
+        console.log('User is sleeping')
+        wakeup(x)
+        return;
+    }
+    if (sleeping === false) {
+        console.log('User is not sleeping')
+        sleep(x)
+        return;
+    }
+    else {
+        console.error('Something went wrong.')
+        return;
+    }
+}
 
 async function sleep(x) {
     if (sleep_alr === true) {
@@ -34,11 +78,11 @@ async function sleep(x) {
     console.log('Set')
     // x.value = 'It works!'
     x.textContent = '🔥It works!'
-    // console.log(x) dev
+    sleeping = true;
     await wait(2000)
     console.log('Reset')
     // x.value ='起床'
-    x.textContent = '就寝'
+    callbtn()
     sleep_alr = false;
 }
 
@@ -50,8 +94,13 @@ async function wakeup(x) {
     wakeup_alr = true;
     console.log('Set')
     x.textContent = '🔥It works!'
+    sleeping = false;
     await wait(2000)
     console.log('Reset')
-    x.textContent = '起床'
+    callbtn()
     wakeup_alr = false;
+}
+
+async function addList() {
+    //
 }
