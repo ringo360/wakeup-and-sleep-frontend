@@ -145,7 +145,7 @@ async function shouldRemove() {
     }
 }
 
-const fmtTime = ( val , text = "0" , before = true ) => {
+const fmtTime = ( val, text = "0", before = true ) => {
     const repeatText = text.repeat(2);
     const fromTo = (before) ?
                 { text : repeatText + val , from : -2 , to : val.length + 2}
