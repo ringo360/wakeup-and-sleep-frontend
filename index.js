@@ -109,14 +109,26 @@ async function addList() {
         console.log('fetch......')
         const row = document.getElementById('lastsleep')
         if (row) {
-            row.insertAdjacentHTML('beforeend', `<td>5:30</td>`)
+            const now = new Date()
+            const hour = fmtTime(`${now.getHours()}`)
+            const min = fmtTime(`${now.getMinutes()}`)
+            const time = `${hour}:${min}`
+            row.insertAdjacentHTML('beforeend', `<td>${time}</td>`)
             row.removeAttribute('id')
         } else {
             console.error('oops')
         }
     } else {
         const elem = document.getElementById('slog')
-        elem.insertAdjacentHTML(`beforeend`, `<tr id='lastsleep'><td>2024/04/27</td><td id='start'>22:53</td></tr>`)
+        const now = new Date()
+        const year = now.getFullYear()
+        const mon = fmtTime(`${now.getMonth()}`)
+        const day = fmtTime(`${now.getDay()}`)
+        const today = `${year}/${mon}/${day}`
+        const hour = fmtTime(`${now.getHours()}`)
+        const min = fmtTime(`${now.getMinutes()}`)
+        const time = `${hour}:${min}`
+        elem.insertAdjacentHTML(`beforeend`, `<tr id='lastsleep'><td>${today}</td><td id='start'>${time}</td></tr>`)
         shouldRemove()
         //削除
         // document.getElementById('slog').firstElementChild.children[1].remove()
@@ -131,4 +143,13 @@ async function shouldRemove() {
         console.log('Removing')
         document.getElementById('slog').firstElementChild.children[1].remove()
     }
+}
+
+const fmtTime = ( val , text = "0" , before = true ) => {
+    const repeatText = text.repeat(2);
+    const fromTo = (before) ?
+                { text : repeatText + val , from : -2 , to : val.length + 2}
+                : { text : val + repeatText , from : 0 , to :  2};
+
+    return fromTo.text.slice( fromTo.from , fromTo.to );
 }
