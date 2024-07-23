@@ -4,7 +4,6 @@ let fail =0;
 
 
 async function main() {
-    console.log('Fetching...')
     const cookie = getAccToken()
     console.log('cookie:' + cookie)
     const res = await fetch('https://p-dev.ringoxd.dev/auth/info', {
@@ -19,14 +18,12 @@ async function main() {
     
     if (res.status !== 200) {
         fail++;
-        console.error(`Failed(${fail})`)
+        console.log(`Retrying (${fail})`)
         if (res.status === 401) {
             if (fail === 3) {
-                console.error('Need to login')
+                console.log('Failed to login.')
                 return append('Login', false);
             }
-
-            console.log('Failed. trying again...')
             const acc_res = await fetch('https://p-dev.ringoxd.dev/auth/acctoken', {
                 method: 'GET',
                 headers: {
@@ -49,9 +46,7 @@ async function main() {
     }
 }
 async function append(x, is) {
-    console.log('Appending...')
     const elem = document.getElementById('user')
-    console.log(elem)
     if (is === true) {
         elem.insertAdjacentHTML('afterbegin', `<p>${x} | <a onclick="logout()">Logout</a></p>`)
     } else {
