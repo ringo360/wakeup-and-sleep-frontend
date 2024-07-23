@@ -1,5 +1,3 @@
-console.log('Called Index')
-
 let sleeping = false;
 let sleep_alr = false;
 let wakeup_alr = false;
@@ -16,11 +14,11 @@ if (document.readyState === 'loading') {
 let called = false;
 async function caller() {
     if (called === true) return;
-    console.log('Calling 🚀')
     called = true;
     loadheader()
     main()
     callbtn()
+    console.log('Sucessfully called')
 }
 async function loadheader() {
     fetch('./components/header.html')
@@ -35,18 +33,12 @@ async function loadheader() {
 } 
 
 async function callbtn() {
-    console.log('Loading btn')
     const x = document.getElementById('btn')
-    console.log(x)
     if (sleeping) x.textContent = '就寝'
     else x.textContent = '起床'
 }
 
-function wait(time) {
-    return new Promise( (resolve) => {
-        setTimeout(resolve, time)
-    })
-}
+function wait(time){return new Promise((resolve)=>{setTimeout(resolve, time)})}
 /*
 const button = document.getElementById('sleep');
 button.addEventListener('click', sleep(this))
@@ -54,34 +46,28 @@ button.addEventListener('click', sleep(this))
 
 async function fire(x) {
     if (sleeping === true) {
-        console.log('User is sleeping')
         wakeup(x)
         return;
     }
     if (sleeping === false) {
-        console.log('User is not sleeping')
         sleep(x)
         return;
     }
     else {
-        console.error('Something went wrong.')
         return;
     }
 }
 
 async function sleep(x) {
     if (sleep_alr === true) {
-        console.log('Ignore')
         return;
     }
     sleep_alr = true;
-    console.log('Set')
     // x.value = 'It works!'
     addList()
     x.textContent = '🔥It works!'
     sleeping = true;
     await wait(2000)
-    console.log('Reset')
     // x.value ='起床'
     callbtn()
     sleep_alr = false;
@@ -89,16 +75,13 @@ async function sleep(x) {
 
 async function wakeup(x) {
     if (wakeup_alr === true) {
-        console.log('Ignore')
         return;
     }
     wakeup_alr = true;
-    console.log('Set')
     addList()
     x.textContent = '🔥It works!'
     sleeping = false;
     await wait(2000)
-    console.log('Reset')
     callbtn()
     wakeup_alr = false;
 }
@@ -106,7 +89,6 @@ async function wakeup(x) {
 async function addList() {
     console.log(sleeping)
     if (sleeping === true) {
-        console.log('fetch......')
         const row = document.getElementById('lastsleep')
         if (row) {
             const now = new Date()
@@ -140,7 +122,6 @@ async function shouldRemove() {
     const len = rowCount.childNodes.length -1
     console.log(len)
     if (len > 7) {
-        console.log('Removing')
         document.getElementById('slog').firstElementChild.children[1].remove()
     }
 }
