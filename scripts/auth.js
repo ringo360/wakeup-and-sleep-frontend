@@ -5,7 +5,6 @@ let fail =0;
 
 async function main() {
     const cookie = getAccToken()
-    console.log('cookie:' + cookie)
     const res = await fetch('https://p-dev.ringoxd.dev/auth/info', {
         method: 'GET',
         mode: 'cors',
@@ -41,7 +40,6 @@ async function main() {
         }
     } else {
         const json = await res.json()
-        console.log(json)
         append(json.res.user, true)
     }
 }

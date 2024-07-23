@@ -4,7 +4,6 @@ let wakeup_alr = false;
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
-        console.log('DOM Loaded')
         caller()
     })
 } else {
@@ -87,7 +86,6 @@ async function wakeup(x) {
 }
 
 async function addList() {
-    console.log(sleeping)
     if (sleeping === true) {
         const row = document.getElementById('lastsleep')
         if (row) {
@@ -120,7 +118,6 @@ async function addList() {
 async function shouldRemove() {
     const rowCount = document.getElementById('slog')
     const len = rowCount.childNodes.length -1
-    console.log(len)
     if (len > 7) {
         document.getElementById('slog').firstElementChild.children[1].remove()
     }
