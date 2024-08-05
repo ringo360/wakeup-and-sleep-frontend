@@ -21,17 +21,6 @@
         <div class="loginform">
             <button id="send" onclick="login()">ログイン</button>
         </div>
-        <!--
-        <form action="https://p-dev.ringoxd.dev/auth/login" method="post">
-            <div>
-                <label>ユーザー名</label>
-                <input type="text" name="username" required />
-                <label>パスワード</label>
-                <input tpye="password" name="password" required />
-                <button>ログイン</button>
-            </div>
-        </form>
-    -->
     </body>
     <script src="/scripts/auth.js"></script>
 </html>
@@ -59,13 +48,11 @@
     @keyframes show {
         from {
             width: 0%;
-            /* height: 0%; */
             opacity: 0;
         }
 
         to {
             width: 100%;
-            /* height: 100%; */
             opacity: 1;
         }
     }
@@ -97,7 +84,6 @@
         }
         formBody = formBody.join("&")
         console.log('prr')
-        // console.log(JSON.stringify(data))
         const res = await fetch('https://p-dev.ringoxd.dev/auth/login', {
             method: 'POST',
             mode: 'cors',
@@ -117,7 +103,6 @@
             console.log('Success')
             document.cookie = `RefT=${json.t}; path=/`
             document.cookie = `Name=${usr.value}; path=/`
-            // await delay(500) delay
             const acc_res = await fetch('https://p-dev.ringoxd.dev/auth/acctoken', {
                 method: 'GET',
                 headers: {

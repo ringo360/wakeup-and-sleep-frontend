@@ -1,8 +1,6 @@
 html {
     display: flex;
     background-color: antiquewhite;
-    /* margin: 10%; */
-    /* flex-direction:column; */
     justify-content: center;
 }
 
@@ -15,34 +13,16 @@ html {
     flex-direction: column;
     text-align: center;
     width: 80vw;
-    /* gap: 10%; */
-    /* padding: 10%; */
     margin: 5vw;
 }
-/*
-.hr {
-    border: none;
-    width: 1vw;
-    height: 10vh;
-    overflow: visible;
-    border-style:dashed;
-    border-color: blue;
-}
-*/
 
 .buttons {
-    /*
-    display: flex;
-    flex-direction:row;
-    flex-wrap: wrap;
-    */
     display: inline-block;
     max-width: 20vw;
     margin-left: auto;
     margin-right: auto;
     gap: 20px 20px;
     max-width: 70vw;
-    /* border: 3px solid blue; */
 }
 
 .list table {
@@ -75,12 +55,6 @@ html {
 #btn:focus {
     background: #0053ba;
 }
-/*
-#btn:focus {
-    outline: 1px solid #fff;
-    outline-offset: -4px;
-}
-*/
 #btn:active {
     transform: scale(0.95)
 }
