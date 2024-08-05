@@ -38,10 +38,6 @@ async function callbtn() {
 }
 
 function wait(time){return new Promise((resolve)=>{setTimeout(resolve, time)})}
-/*
-const button = document.getElementById('sleep');
-button.addEventListener('click', sleep(this))
-*/
 
 async function fire(x) {
     if (sleeping === true) {
