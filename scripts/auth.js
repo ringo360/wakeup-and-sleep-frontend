@@ -1,11 +1,11 @@
 console.log('Called auth.js')
 
+const baseurl = 'http://127.0.0.1:3150'
 let fail =0;
-
 
 async function main() {
     const cookie = getAccToken()
-    const res = await fetch('https://p-dev.ringoxd.dev/auth/info', {
+    const res = await fetch(`${baseurl}/auth/info`, {
         method: 'GET',
         mode: 'cors',
         cache: "no-cache",
@@ -23,7 +23,7 @@ async function main() {
                 console.log('Failed to login.')
                 return append('Login', false);
             }
-            const acc_res = await fetch('https://p-dev.ringoxd.dev/auth/acctoken', {
+            const acc_res = await fetch(`${baseurl}/auth/acctoken`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
