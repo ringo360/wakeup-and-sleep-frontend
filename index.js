@@ -111,8 +111,17 @@ async function addList() {
     }
 }
 
-async function postSleepData() {
-	
+async function postSleepData(token, username, date) {
+	let formBody = []
+	const post_token = encodeURIComponent(token)
+	const user = encodeURIComponent(username)
+	const post_date = encodeURIComponent(date)
+	formBody.push('token=' + post_token)
+	formBody.push('username=' + user)
+	formBody.push('date=' + post_date)
+	const res = await postAPI(formBody, '/v1/sleep')
+	if (res.ok) return true;
+	else return false;
 }
 
 async function shouldRemove() {

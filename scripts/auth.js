@@ -95,3 +95,16 @@ async function try_login(formBody) {
 	})
 	return res;
 }
+
+async function postAPI(formBody, path = '/') {
+	return await fetch(`${baseurl}${path}`, {
+		method: 'POST',
+		mode: 'cors',
+		cache: 'no-cache',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+			'User-Agent': 'WakeApp/1.0'
+		},
+		body: formBody
+	})
+}
