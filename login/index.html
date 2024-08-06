@@ -84,16 +84,7 @@
         }
         formBody = formBody.join("&")
         console.log('prr')
-        const res = await fetch('https://p-dev.ringoxd.dev/auth/login', {
-            method: 'POST',
-            mode: 'cors',
-            cache: "no-cache",
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-                'User-Agent': 'WakeApp/1.0'
-            },
-            body: formBody
-        })
+        const res = await try_login(formBody)
         console.log(res.status)
         const json = await res.json()
         console.log(json)
@@ -103,15 +94,8 @@
             console.log('Success')
             document.cookie = `RefT=${json.t}; path=/`
             document.cookie = `Name=${usr.value}; path=/`
-            const acc_res = await fetch('https://p-dev.ringoxd.dev/auth/acctoken', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'User-Agent': 'WakeApp/1.0',
-                    'X-Token': json.t
-                }
-            })
-            const acc_json = await acc_res.json()
+            // await delay(500) delay
+            const acc_json = await fetch_accToken(json.t)
             document.cookie = `AccT=${acc_json.t}; path=/`
             showresult(true)
         } else {

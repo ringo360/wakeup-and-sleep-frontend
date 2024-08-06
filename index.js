@@ -111,6 +111,10 @@ async function addList() {
     }
 }
 
+async function postSleepData() {
+	
+}
+
 async function shouldRemove() {
     const rowCount = document.getElementById('slog')
     const len = rowCount.childNodes.length -1
