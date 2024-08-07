@@ -44,7 +44,7 @@ function getInfo(cookie) {
         headers: {
             'User-Agent': 'WakeApp/1.0',
             'X-Token': cookie,
-			'Access-Control-Allow-Origin': '*'
+			
         },
     })
 }
@@ -58,7 +58,7 @@ async function fetch_accToken(ref_token) {
 			'Content-Type': 'application/json',
 			'User-Agent': 'WakeApp/1.0',
 			'X-Token': ref_token,
-			'Access-Control-Allow-Origin': '*'
+			
 		}
 	})
 	const acc_json = acc_res.json()
@@ -88,7 +88,7 @@ function isValidToken(cookie) {
         headers: {
             'User-Agent': 'WakeApp/1.0',
             'X-Token': cookie,
-			'Access-Control-Allow-Origin': '*'
+			
         },
     })
 	if (res.ok) return true;
@@ -130,7 +130,7 @@ async function try_login(formBody) {
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 			'User-Agent': 'WakeApp/1.0',
-			'Access-Control-Allow-Origin': '*'
+			
 		},
 		body: formBody
 	})
@@ -145,7 +145,7 @@ async function postAPI(formBody, path = '/') {
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 			'User-Agent': 'WakeApp/1.0',
-			'Access-Control-Allow-Origin': '*'
+			
 		},
 		body: formBody
 	})
@@ -162,7 +162,7 @@ async function getSleepRes(token, username) {
 			'User-Agent': 'WakeApp/1.0',
 			'X-Token': token,
 			'X-UserName': username,
-			'Access-Control-Allow-Origin': '*'
+			
 		},
 	})
 }
@@ -177,7 +177,7 @@ async function getAPI(token, username, path = '/') {
 			'User-Agent': 'WakeApp/1.0',
 			'X-Token': token,
 			'X-UserName': username,
-			'Access-Control-Allow-Origin': '*'
+			
 		},
 	})
 }
@@ -192,7 +192,7 @@ async function deleteAPI(token, username, path = '/') {
 			'User-Agent': 'WakeApp/1.0',
 			'X-Token': token,
 			'X-UserName': username,
-			'Access-Control-Allow-Origin': '*'
+			
 		},
 	})
 }
