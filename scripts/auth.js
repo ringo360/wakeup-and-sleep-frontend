@@ -39,7 +39,7 @@ async function main() {
 function getInfo(cookie) {
 	return fetch(`${baseurl}/auth/info`, {
         method: 'GET',
-        mode: 'no-cors',
+        mode: 'cors',
         cache: "no-cache",
         headers: {
             'User-Agent': 'WakeApp/1.0',
