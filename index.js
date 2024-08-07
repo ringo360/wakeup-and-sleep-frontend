@@ -1,6 +1,7 @@
 let sleeping = false;
 let sleep_alr = false;
 let wakeup_alr = false;
+let can_fire = false;
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
@@ -48,14 +49,18 @@ async function initbtn() {
 }
 
 async function callbtn() {
-    const x = document.getElementById('btn')
+    const x = document.getElementById('graybtn')
     if (sleeping) x.textContent = '就寝'
     else x.textContent = '起床'
+	await wait(50)
+	x.id = 'btn'
+	can_fire = true;
 }
 
 function wait(time){return new Promise((resolve)=>{setTimeout(resolve, time)})}
 
 async function fire(x) {
+	if (!can_fire) return;
     if (sleeping === true) {
         wakeup(x)
         return;
@@ -227,11 +232,11 @@ async function fetchSleepData() {
     const table = document.getElementById('slog');
 
     // use if need
-	/*
+	
     while (table.rows.length > 1) {
         table.deleteRow(1);
     }
-	*/
+	
     latest7.forEach(record => {
         const sleepdate = new Date(record.sleepdate);
         const wakeupdate = record.wakeupdate ? new Date(record.wakeupdate) : null;
