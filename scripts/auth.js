@@ -1,6 +1,6 @@
 console.log('Called auth.js')
 
-const baseurl = 'http://192.168.1.208:3150'
+const baseurl = 'https://was-api.a1z.uk/'
 let fail =0;
 
 let readyindex = false;
