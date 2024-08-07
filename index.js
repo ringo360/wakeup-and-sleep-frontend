@@ -175,11 +175,12 @@ async function shouldRemove() {
     const rows = table.getElementsByTagName('tr');
     const len = rows.length - 1;  // ヘッダ行を除外してカウント
     console.log(len);
-    if (len > 7) {
+    if (len > 2) {
         const firstRow = rows[1]; // ヘッダ行の次の行を取得
         console.log(firstRow);
 		if (firstRow) {
             firstRow.remove();
+			/*
 			const token = await getAccToken()
 			const info = await getInfo(token)
 			if (!info.ok) {
@@ -188,6 +189,7 @@ async function shouldRemove() {
 			}
 			const json = await info.json()
 			await deleteAPI(token, json.res.user, '/v1/sleep')
+			*/
 		}
     }
 }
