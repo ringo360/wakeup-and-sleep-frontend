@@ -66,12 +66,9 @@
 
     async function login() {
         const btn = document.getElementById('send')
-        console.log(btn)
         btn.textContent = 'ログイン中...'
         const usr = await document.getElementById('user')
-        console.log(usr.value)
         const pass = await document.getElementById('pass')
-        console.log(pass.value)
         const details = {
             'username': usr.value,
             'password': pass.value
@@ -83,12 +80,8 @@
             formBody.push(encodedKey + "=" + encodedVal)
         }
         formBody = formBody.join("&")
-        console.log('prr')
         const res = await try_login(formBody)
-        console.log(res.status)
         const json = await res.json()
-        console.log(json)
-        console.log(json.t)
         //login check
         if (res.status === 200) {
             console.log('Success')

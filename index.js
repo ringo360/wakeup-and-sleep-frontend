@@ -109,7 +109,6 @@ async function addList() {
                 break;
             }
         }
-		console.log(row)
         if (row) {
             const now = new Date()
 			const year = now.getFullYear()
@@ -122,8 +121,6 @@ async function addList() {
 			const token = await getAccToken()
 			const res = await getInfo(token)
 			const json = await res.json()
-			console.log('(2)Posting...')
-			console.log(json.res.user)
 			postSleepData(token, json.res.user, `${year}-${mon}-${day} ${time}:${sec}`)
             row.cells[row.cells.length - 1].textContent = time;
         } else {
@@ -164,7 +161,6 @@ async function postSleepData(token, username, date) {
 	formBody.push('username=' + user)
 	formBody.push('date=' + post_date)
 	formBody = await formBody.join("&")
-	console.log(formBody)
 	const res = await postAPI(formBody, '/v1/sleep')
 	if (res.ok) return true;
 	else return false;
@@ -174,10 +170,8 @@ async function shouldRemove() {
     const table = document.getElementById('slog');
     const rows = table.getElementsByTagName('tr');
     const len = rows.length - 1;  // ヘッダ行を除外してカウント
-    console.log(len);
     if (len > 7) {
         const firstRow = rows[1]; // ヘッダ行の次の行を取得
-        console.log(firstRow);
 		if (firstRow) {
             firstRow.remove();
 			/*

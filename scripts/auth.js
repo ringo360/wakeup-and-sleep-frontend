@@ -18,7 +18,7 @@ async function main() {
         console.log(`Retrying (${fail})`)
         if (res.status === 401) {
             if (fail === 3) {
-                console.log('Failed to login.')
+                console.log('[!] Failed to login.')
                 goLogin()
             }
             const acc_json = await fetch_accToken()
@@ -119,7 +119,6 @@ async function logout() {
 }
 
 async function try_login(formBody) {
-	console.log(formBody)
 	const res = await fetch(`${baseurl}/auth/login`, {
 		method: 'POST',
 		mode: 'cors',
