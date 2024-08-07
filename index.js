@@ -175,7 +175,7 @@ async function shouldRemove() {
     const rows = table.getElementsByTagName('tr');
     const len = rows.length - 1;  // ヘッダ行を除外してカウント
     console.log(len);
-    if (len > 2) {
+    if (len > 7) {
         const firstRow = rows[1]; // ヘッダ行の次の行を取得
         console.log(firstRow);
 		if (firstRow) {
@@ -204,45 +204,65 @@ const fmtTime = ( val, text = "0", before = true ) => {
 }
 
 async function fetchSleepData() {
-	console.log('Fetching sleep data')
-	const token = await getAccToken()
-	const info = await getInfo(token)
-	if (!info.ok) {
-		console.error('response is not ok, returing...')
-		return;
-	}
-	const json = await info.json()
-	const res = await getSleepRes(token, json.res.user)
-	const data = await res.json();
+    console.log('Fetching sleep data');
+    const token = await getAccToken();
+    const info = await getInfo(token);
 
-	const table = document.getElementById('slog');
+    if (!info.ok) {
+        console.error('response is not ok, returing...');
+        return;
+    }
 
-	for (const key in data) {
-		const sleepdate = new Date(data[key].sleepdate);
-		const wakeupdate = data[key].wakeupdate ? new Date(data[key].wakeupdate) : null;
+    const json = await info.json();
+    const res = await getSleepRes(token, json.res.user);
+    const data = await res.json();
 
-		const row = document.createElement('tr');
 
-		const dateCell = document.createElement('td');
-		dateCell.textContent = formatDate(sleepdate);
-		row.appendChild(dateCell);
+    const dataArray = Object.keys(data).map(key => ({
+        ...data[key],
+        id: key
+    }));
 
-		const sleepTimeCell = document.createElement('td');
-		sleepTimeCell.textContent = sleepdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
-		row.appendChild(sleepTimeCell);
 
-		const wakeupTimeCell = document.createElement('td');
-		wakeupTimeCell.textContent = wakeupdate ? wakeupdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) : 'N/A';
-		row.appendChild(wakeupTimeCell);
+    dataArray.sort((a, b) => new Date(b.sleepdate) - new Date(a.sleepdate));
 
-		table.appendChild(row);
-	}
+    // Select the latest 7 records
+    const latest7 = dataArray.slice(0, 7);
+	latest7.sort((a, b) => new Date(a.sleepdate) - new Date(b.sleepdate));
+
+    const table = document.getElementById('slog');
+
+    // use if need
+	/*
+    while (table.rows.length > 1) {
+        table.deleteRow(1);
+    }
+	*/
+    latest7.forEach(record => {
+        const sleepdate = new Date(record.sleepdate);
+        const wakeupdate = record.wakeupdate ? new Date(record.wakeupdate) : null;
+
+        const row = document.createElement('tr');
+
+        const dateCell = document.createElement('td');
+        dateCell.textContent = formatDate(sleepdate);
+        row.appendChild(dateCell);
+
+        const sleepTimeCell = document.createElement('td');
+        sleepTimeCell.textContent = sleepdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+        row.appendChild(sleepTimeCell);
+
+        const wakeupTimeCell = document.createElement('td');
+        wakeupTimeCell.textContent = wakeupdate ? wakeupdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) : 'N/A';
+        row.appendChild(wakeupTimeCell);
+
+        table.appendChild(row);
+    });
 }
 
-
 function formatDate(date) {
-	const year = date.getFullYear();
-	const month = String(date.getMonth() + 1).padStart(2, '0');
-	const day = String(date.getDate()).padStart(2, '0');
-	return `${year}/${month}/${day}`;
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}/${month}/${day}`;
 }
