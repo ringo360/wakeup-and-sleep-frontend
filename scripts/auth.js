@@ -43,7 +43,8 @@ function getInfo(cookie) {
         cache: "no-cache",
         headers: {
             'User-Agent': 'WakeApp/1.0',
-            'X-Token': cookie
+            'X-Token': cookie,
+			'Access-Control-Allow-Origin': '*'
         },
     })
 }
@@ -56,7 +57,8 @@ async function fetch_accToken(ref_token) {
 		headers: {
 			'Content-Type': 'application/json',
 			'User-Agent': 'WakeApp/1.0',
-			'X-Token': ref_token
+			'X-Token': ref_token,
+			'Access-Control-Allow-Origin': '*'
 		}
 	})
 	const acc_json = acc_res.json()
@@ -85,7 +87,8 @@ function isValidToken(cookie) {
         cache: "no-cache",
         headers: {
             'User-Agent': 'WakeApp/1.0',
-            'X-Token': cookie
+            'X-Token': cookie,
+			'Access-Control-Allow-Origin': '*'
         },
     })
 	if (res.ok) return true;
@@ -126,7 +129,8 @@ async function try_login(formBody) {
 		cache: "no-cache",
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-			'User-Agent': 'WakeApp/1.0'
+			'User-Agent': 'WakeApp/1.0',
+			'Access-Control-Allow-Origin': '*'
 		},
 		body: formBody
 	})
@@ -140,7 +144,8 @@ async function postAPI(formBody, path = '/') {
 		cache: 'no-cache',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-			'User-Agent': 'WakeApp/1.0'
+			'User-Agent': 'WakeApp/1.0',
+			'Access-Control-Allow-Origin': '*'
 		},
 		body: formBody
 	})
@@ -156,7 +161,8 @@ async function getSleepRes(token, username) {
 			'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 			'User-Agent': 'WakeApp/1.0',
 			'X-Token': token,
-			'X-UserName': username
+			'X-UserName': username,
+			'Access-Control-Allow-Origin': '*'
 		},
 	})
 }
@@ -170,7 +176,8 @@ async function getAPI(token, username, path = '/') {
 			'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 			'User-Agent': 'WakeApp/1.0',
 			'X-Token': token,
-			'X-UserName': username
+			'X-UserName': username,
+			'Access-Control-Allow-Origin': '*'
 		},
 	})
 }
@@ -184,7 +191,8 @@ async function deleteAPI(token, username, path = '/') {
 			'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 			'User-Agent': 'WakeApp/1.0',
 			'X-Token': token,
-			'X-UserName': username
+			'X-UserName': username,
+			'Access-Control-Allow-Origin': '*'
 		},
 	})
 }
