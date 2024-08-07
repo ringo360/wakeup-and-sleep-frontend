@@ -52,6 +52,7 @@ async function fetch_accToken(ref_token) {
 	if (!ref_token) ref_token = await getRefToken()
 	const acc_res = await fetch(`${baseurl}/auth/acctoken`, {
 		method: 'GET',
+		mode: 'cors',
 		headers: {
 			'Content-Type': 'application/json',
 			'User-Agent': 'WakeApp/1.0',
