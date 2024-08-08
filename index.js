@@ -43,18 +43,23 @@ async function initbtn() {
 	const json = await info.json()
 	const res = await getAPI(token, json.res.user, '/v1/sleeping')
 	const res_json = await res.json()
-	if (res_json.isSleeping) sleeping = true
-	else sleeping = false
-	callbtn()
+	const x = document.getElementById('graybtn')
+	if (res_json.isSleeping) {
+		sleeping = true
+		x.textContent = '就寝'
+	} else {
+		sleeping = false
+		x.textContent = '起床'
+	}
+	await wait(50)
+	x.id = 'btn'
+	can_fire = true
 }
 
 async function callbtn() {
-    const x = document.getElementById('graybtn')
+    const x = document.getElementById('btn')
     if (sleeping) x.textContent = '就寝'
     else x.textContent = '起床'
-	await wait(50)
-	x.id = 'btn'
-	can_fire = true;
 }
 
 function wait(time){return new Promise((resolve)=>{setTimeout(resolve, time)})}
