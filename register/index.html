@@ -1,0 +1,111 @@
+<head>
+    <link rel="stylesheet" href="../styles/global.css" />
+    <title>(!)早寝早起き朝ごはんApp</title>
+</head>
+<html>
+    <aside id="header"></aside>
+    <body>
+        <div class="title">
+            <h1>早寝早起き朝ごはんアプリ</h1>
+        </div>
+        <!-- <h1 class="result fail">Result</h1> -->
+        <h1 id="register" style="text-align: center;">登録</h1>
+        <div class="registerform">
+            <label for="user">ユーザー名</label>
+            <input type="text" id="user" name="username">
+        </div>
+        <div class="registerform">
+            <label for="user">パスワード</label>
+            <input type="text" id="pass" name="password">
+        </div>
+        <div class="registerform">
+            <button id="send" onclick="register()">登録</button>
+        </div>
+    </body>
+    <script src="/scripts/auth.js"></script>
+</html>
+
+<style>
+    .result {
+        display: block;
+        text-align: center;
+        
+        transition: all 0.5s ease;
+    }
+    .success {
+        background-color: rgba(0, 255, 64, 0.5);
+        animation-duration: 0.5s;
+        animation-name: show;
+        animation-fill-mode: forwards;
+    }
+    .fail {
+        background-color: rgba(255, 0, 0, 0.5);
+        animation-duration: 0.5s;
+        animation-name: show;
+        animation-fill-mode: forwards;
+    }
+
+    @keyframes show {
+        from {
+            width: 0%;
+            opacity: 0;
+        }
+
+        to {
+            width: 100%;
+            opacity: 1;
+        }
+    }
+
+</style>
+
+<script>
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    //tysm - https://stackoverflow.com/questions/35325370/how-do-i-post-a-x-www-form-urlencoded-request-using-fetch
+
+    async function register() {
+        const btn = document.getElementById('send')
+        btn.textContent = 'ログイン中...'
+        const usr = await document.getElementById('user')
+        const pass = await document.getElementById('pass')
+        const details = {
+            'username': usr.value,
+            'password': pass.value
+        }
+        let formBody = []
+        for (let prop in details) {
+            let encodedKey = encodeURIComponent(prop)
+            let encodedVal = encodeURIComponent(details[prop])
+            formBody.push(encodedKey + "=" + encodedVal)
+        }
+        formBody = formBody.join("&")
+        const res = await try_register(formBody)
+        const json = await res.json()
+        //register check
+        if (res.status === 200) {
+            console.log('Success')
+            document.cookie = `RefT=${json.t}; path=/`
+            document.cookie = `Name=${usr.value}; path=/`
+            // await delay(500) delay
+            const acc_json = await fetch_accToken(json.t)
+            document.cookie = `AccT=${acc_json.t}; path=/`
+            showresult(true)
+        } else {
+            showresult(false)
+        }
+    }
+    async function showresult(isSuccess) {
+        console.log('Appending...')
+        if (isSuccess === true) {
+            const elem = document.getElementById('register')
+            elem.insertAdjacentHTML('beforebegin', '<h1 class="result success">Success!</h1>')
+            await delay(1000)
+            location.href = '../index.html'
+        } else {
+            
+            const elem = document.getElementById('register')
+            elem.insertAdjacentHTML('beforebegin', '<h1 class="result fail">Failed!</h1>')
+        }
+    }
+</script>
