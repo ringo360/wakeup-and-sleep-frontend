@@ -80,7 +80,7 @@
             formBody.push(encodedKey + "=" + encodedVal)
         }
         formBody = formBody.join("&")
-        const res = await try_register(formBody)
+        const res = await postAPI() //!fix fix fix fix fix fix
         const json = await res.json()
         //register check
         if (res.status === 200) {
