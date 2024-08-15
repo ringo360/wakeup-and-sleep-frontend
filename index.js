@@ -46,10 +46,10 @@ async function initbtn() {
 	const x = document.getElementById('graybtn')
 	if (res_json.isSleeping) {
 		sleeping = true
-		x.textContent = '就寝'
+		x.textContent = '起床'
 	} else {
 		sleeping = false
-		x.textContent = '起床'
+		x.textContent = '就寝'
 	}
 	await wait(50)
 	x.id = 'btn'
@@ -58,8 +58,8 @@ async function initbtn() {
 
 async function callbtn() {
     const x = document.getElementById('btn')
-    if (sleeping) x.textContent = '就寝'
-    else x.textContent = '起床'
+    if (sleeping) x.textContent = '起床'
+    else x.textContent = '就寝'
 }
 
 function wait(time){return new Promise((resolve)=>{setTimeout(resolve, time)})}
