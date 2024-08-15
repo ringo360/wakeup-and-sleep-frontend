@@ -10,6 +10,7 @@
         </div>
         <!-- <h1 class="result fail">Result</h1> -->
         <h1 id="login" style="text-align: center;">ログイン</h1>
+		<h3 style="text-align: center;">アカウント作成は<a href="../register/index.html">こちら</a></h3>
         <div class="loginform">
             <label for="user">ユーザー名</label>
             <input type="text" id="user" name="username">
@@ -106,6 +107,8 @@
             
             const elem = document.getElementById('login')
             elem.insertAdjacentHTML('beforebegin', '<h1 class="result fail">Failed!</h1>')
+			await delay(2000)
+			location.href = './index.html'
         }
     }
 </script>

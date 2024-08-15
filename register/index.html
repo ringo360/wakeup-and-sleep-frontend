@@ -66,7 +66,7 @@
 
     async function register() {
         const btn = document.getElementById('send')
-        btn.textContent = 'ログイン中...'
+        btn.textContent = '登録中...'
         const usr = await document.getElementById('user')
         const pass = await document.getElementById('pass')
         const details = {
@@ -80,32 +80,31 @@
             formBody.push(encodedKey + "=" + encodedVal)
         }
         formBody = formBody.join("&")
-        const res = await postAPI() //!fix fix fix fix fix fix
-        const json = await res.json()
-        //register check
-        if (res.status === 200) {
-            console.log('Success')
-            document.cookie = `RefT=${json.t}; path=/`
-            document.cookie = `Name=${usr.value}; path=/`
-            // await delay(500) delay
-            const acc_json = await fetch_accToken(json.t)
-            document.cookie = `AccT=${acc_json.t}; path=/`
-            showresult(true)
-        } else {
-            showresult(false)
-        }
+        const res = await postAPI(formBody, '/auth/register')
+		if (!res.ok) {
+			if (res.status === 400) {
+				showresult(false, 'そのユーザーは既に存在します！')
+			} else {
+				showresult(false, `内部エラーが発生しました(${res.status})`)
+			}
+		} else {
+			showresult(true)
+		}
+
     }
-    async function showresult(isSuccess) {
+    async function showresult(isSuccess, msg = 'Failed!') {
         console.log('Appending...')
         if (isSuccess === true) {
             const elem = document.getElementById('register')
             elem.insertAdjacentHTML('beforebegin', '<h1 class="result success">Success!</h1>')
             await delay(1000)
-            location.href = '../index.html'
+            location.href = '../login/index.html'
         } else {
             
             const elem = document.getElementById('register')
-            elem.insertAdjacentHTML('beforebegin', '<h1 class="result fail">Failed!</h1>')
+            elem.insertAdjacentHTML('beforebegin', `<h1 class="result fail">${msg}</h1>`)
+			await delay(2000)
+			location.href = './index.html'
         }
     }
 </script>
