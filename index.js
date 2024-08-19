@@ -73,7 +73,8 @@ async function sleep(x) {
     sleep_alr = true;
     // x.value = 'It works!'
     await addList()
-    x.textContent = '🌞'
+    x.textContent = '🌙'
+    // x.textContent = '🌞'
     sleeping = true;
     await wait(2000)
     // x.value ='起床'
@@ -87,7 +88,8 @@ async function wakeup(x) {
     }
     wakeup_alr = true;
     await addList()
-    x.textContent = '🌙'
+    // x.textContent = '🌙'
+    x.textContent = '🌞'
     sleeping = false;
     await wait(2000)
     callbtn()
