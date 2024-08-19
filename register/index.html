@@ -47,12 +47,12 @@
 
     @keyframes show {
         from {
-            width: 0%;
+            scale: 0;
             opacity: 0;
         }
 
         to {
-            width: 100%;
+            scale: 1;
             opacity: 1;
         }
     }
@@ -96,15 +96,22 @@
         console.log('Appending...')
         if (isSuccess === true) {
             const elem = document.getElementById('register')
-            elem.insertAdjacentHTML('beforebegin', '<h1 class="result success">Success!</h1>')
+            elem.insertAdjacentHTML('beforebegin', '<h1 class="result success">作成しました！</h1>')
             await delay(1000)
+			const addedElem = document.querySelector('.result.success')
+			if (addedElem) {
+				addedElem.remove()
+			}
             location.href = '../login/index.html'
         } else {
             
             const elem = document.getElementById('register')
             elem.insertAdjacentHTML('beforebegin', `<h1 class="result fail">${msg}</h1>`)
 			await delay(2000)
-			location.href = './index.html'
+			const addedElem = document.querySelector('.result.fail')
+			if (addedElem) {
+				addedElem.remove()
+			}
         }
     }
 </script>

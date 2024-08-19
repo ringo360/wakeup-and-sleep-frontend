@@ -44,6 +44,13 @@ html {
 
 }
 
+.flex-center {
+	display: flex;
+	align-items: center;
+	align-self: center;
+	align-content: center;
+}
+
 .btnbase {
 	transition: background 0.25s ease-in-out, transform 0.15s ease;
 	font-size: 1rem;

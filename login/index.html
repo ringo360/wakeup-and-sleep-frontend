@@ -10,7 +10,6 @@
         </div>
         <!-- <h1 class="result fail">Result</h1> -->
         <h1 id="login" style="text-align: center;">ログイン</h1>
-		<h3 style="text-align: center;">アカウント作成は<a href="../register/index.html">こちら</a></h3>
         <div class="loginform">
             <label for="user">ユーザー名</label>
             <input type="text" id="user" name="username">
@@ -20,17 +19,31 @@
             <input type="text" id="pass" name="password">
         </div>
         <div class="loginform">
-            <button id="send" onclick="login()">ログイン</button>
+            <button class="btnbase flex-center" id="btn" onclick="login()">ログイン</button>
         </div>
+		<p style="text-align: center;">アカウント作成は<a href="../register/index.html">こちら</a></p>
     </body>
     <script src="/scripts/auth.js"></script>
+    <script src="/scripts/util.js"></script>
 </html>
 
 <style>
+	.login {
+		display: flex;
+		align-items: center;
+		align-content: center;
+		justify-content: center;
+	}
+	.loginform {
+		display: flex;
+		justify-content: center;
+	}
+	#btn, #graybtn {
+		margin: 1em;
+	}
     .result {
         display: block;
         text-align: center;
-        
         transition: all 0.5s ease;
     }
     .success {
@@ -48,12 +61,12 @@
 
     @keyframes show {
         from {
-            width: 0%;
+            scale: 0;
             opacity: 0;
         }
 
         to {
-            width: 100%;
+            scale: 1;
             opacity: 1;
         }
     }
@@ -66,8 +79,9 @@
     //tysm - https://stackoverflow.com/questions/35325370/how-do-i-post-a-x-www-form-urlencoded-request-using-fetch
 
     async function login() {
-        const btn = document.getElementById('send')
+        const btn = document.getElementById('btn')
         btn.textContent = 'ログイン中...'
+		switchButton(btn, true)
         const usr = await document.getElementById('user')
         const pass = await document.getElementById('pass')
         const details = {
@@ -92,23 +106,32 @@
             const acc_json = await fetch_accToken(json.t)
             document.cookie = `AccT=${acc_json.t}; path=/`
             showresult(true)
+			switchButton(btn, false)
         } else {
             showresult(false)
+			switchButton(btn, false)
         }
     }
     async function showresult(isSuccess) {
         console.log('Appending...')
         if (isSuccess === true) {
             const elem = document.getElementById('login')
-            elem.insertAdjacentHTML('beforebegin', '<h1 class="result success">Success!</h1>')
+            elem.insertAdjacentHTML('beforebegin', '<h1 class="result success">ログインしました！</h1>')
             await delay(1000)
+			const addedElem = document.querySelector('.result.success')
+			if (addedElem) {
+				addedElem.remove()
+			}
             location.href = '../index.html'
         } else {
             
             const elem = document.getElementById('login')
-            elem.insertAdjacentHTML('beforebegin', '<h1 class="result fail">Failed!</h1>')
+            elem.insertAdjacentHTML('beforebegin', '<h1 class="result fail">ユーザー・パスワードが違います</h1>')
 			await delay(2000)
-			location.href = './index.html'
+			const addedElem = document.querySelector('.result.fail')
+			if (addedElem) {
+				addedElem.remove()
+			}
         }
     }
 </script>

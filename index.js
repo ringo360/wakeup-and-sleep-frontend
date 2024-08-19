@@ -15,23 +15,10 @@ let called = false;
 async function caller() {
     if (called === true) return;
     called = true;
-    loadheader()
     main()
 	initbtn()
     console.log('Sucessfully called index.js')
 }
-async function loadheader() {
-    fetch('./components/header.html')
-            .then(res => res.text())
-            .then(html => {
-                document.getElementById('header').innerHTML = html;
-				indexReady()
-                caller()
-            })
-            .catch(e => {
-                console.error('Failed to fetch header', e)
-            })
-} 
 
 async function initbtn() {
 	const token = await getAccToken()
