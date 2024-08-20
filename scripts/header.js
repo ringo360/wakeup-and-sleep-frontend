@@ -11,4 +11,6 @@ async function loadheader() {
             .catch(e => {
                 console.error('Failed to fetch header', e)
             })
-} 
+}
+
+loadheader()

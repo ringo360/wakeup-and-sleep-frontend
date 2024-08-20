@@ -53,6 +53,7 @@ function wait(time){return new Promise((resolve)=>{setTimeout(resolve, time)})}
 
 async function fire(x) {
 	if (!can_fire) return;
+    console.log(sleeping)
     if (sleeping === true) {
         wakeup(x)
         return;
@@ -103,7 +104,13 @@ async function addList() {
 
         for (const r of rows) {
             const cells = r.querySelectorAll('td');
-            if (cells.length > 0 && cells[cells.length - 1].textContent === 'N/A') {
+            console.log(cells)
+            console.log(cells.length)
+            if (cells[cells.length - 2]) {
+                console.log(cells[cells.length - 2].textContent)
+            }
+            if (cells.length > 0 && cells[cells.length - 2].textContent === '記録なし') {
+                console.log('Matched')
                 row = r;
                 break;
             }
@@ -121,7 +128,7 @@ async function addList() {
 			const res = await getInfo(token)
 			const json = await res.json()
 			postSleepData(token, json.res.user, `${year}-${mon}-${day} ${time}:${sec}`)
-            row.cells[row.cells.length - 1].textContent = time;
+            row.cells[row.cells.length - 2].textContent = time;
         } else {
             console.error('oops')
         }
@@ -136,7 +143,7 @@ async function addList() {
         const min = fmtTime(`${now.getMinutes()}`)
 		const sec = fmtTime(`${now.getSeconds()}`)
         const time = `${hour}:${min}`
-        elem.insertAdjacentHTML(`beforeend`, `<tr><td>${today}</td><td>${time}</td><td>N/A</td></tr>`)
+        elem.insertAdjacentHTML(`beforeend`, `<tr><td>${today}</td><td>${time}</td><td>記録なし</td><td><input type="checkbox" id="breakfast" onclick="checkbf(tdis)"></td></tr>`)
 		const token = await getAccToken()
 		const res = await getInfo(token)
 		if (!res.ok) {
@@ -246,8 +253,15 @@ async function fetchSleepData() {
         row.appendChild(sleepTimeCell);
 
         const wakeupTimeCell = document.createElement('td');
-        wakeupTimeCell.textContent = wakeupdate ? wakeupdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) : 'N/A';
+        wakeupTimeCell.textContent = wakeupdate ? wakeupdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) : '記録なし';
         row.appendChild(wakeupTimeCell);
+        
+        const CheckCell = document.createElement('td');
+        const CheckBox = document.createElement('input');
+        CheckBox.type = 'checkbox';
+        CheckBox.onclick = checkbf(this)
+        CheckCell.appendChild(CheckBox)
+        row.appendChild(CheckCell)
 
         table.appendChild(row);
     });
