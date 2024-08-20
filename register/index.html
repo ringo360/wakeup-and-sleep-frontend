@@ -21,6 +21,7 @@
         <div class="registerform">
             <button id="send" onclick="register()">登録</button>
         </div>
+        <p style="text-align: center;">ユーザー名とパスワードは英数字のみ入力できます。</p>
     </body>
     <script src="/scripts/auth.js"></script>
 </html>
@@ -61,6 +62,7 @@
 
 <script>
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    const regex = /^[0-9a-zA-Z]+$/
 
     //tysm - https://stackoverflow.com/questions/35325370/how-do-i-post-a-x-www-form-urlencoded-request-using-fetch
 
@@ -69,6 +71,9 @@
         btn.textContent = '登録中...'
         const usr = await document.getElementById('user')
         const pass = await document.getElementById('pass')
+        if (!regex.test(usr) || !regex.test(pass)) {
+            return showresult(false, '使えない文字が含まれています！')
+        }
         const details = {
             'username': usr.value,
             'password': pass.value
