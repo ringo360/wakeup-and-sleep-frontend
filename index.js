@@ -117,9 +117,11 @@ async function addList() {
         }
         if (row) {
             const now = new Date()
+            console.log(now)
 			const year = now.getFullYear()
-	        const mon = fmtTime(`${now.getMonth()}`)
-    	    const day = fmtTime(`${now.getDay()}`)
+	        const mon = fmtTime(`${now.getMonth() + 1}`)
+            console.log(mon)
+    	    const day = fmtTime(`${now.getDate()}`)
             const hour = fmtTime(`${now.getHours()}`)
             const min = fmtTime(`${now.getMinutes()}`)
 			const sec = fmtTime(`${now.getSeconds()}`)
@@ -135,9 +137,11 @@ async function addList() {
     } else {
         const elem = document.getElementById('slog')
         const now = new Date()
+        console.log(now)
         const year = now.getFullYear()
-        const mon = fmtTime(`${now.getMonth()}`)
-        const day = fmtTime(`${now.getDay()}`)
+        const mon = fmtTime(`${now.getMonth() + 1}`)
+        console.log(mon)
+        const day = fmtTime(`${now.getDate()}`)
         const today = `${year}/${mon}/${day}`
         const hour = fmtTime(`${now.getHours()}`)
         const min = fmtTime(`${now.getMinutes()}`)
