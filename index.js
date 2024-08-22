@@ -98,7 +98,7 @@ async function wakeup(x) {
 }
 
 async function addList() {
-    if (sleeping === true) {
+    if (sleeping === false) {
         const rows = document.querySelectorAll('#slog tr');
         let row = null;
 
