@@ -1,7 +1,7 @@
 console.log('Called auth.js')
 
-//const baseurl = 'https://was-api.a1z.uk'
-const baseurl = 'https://p-dev.ringoxd.dev'
+const baseurl = 'https://was-api.a1z.uk'
+//const baseurl = 'https://p-dev.ringoxd.dev'
 let fail =0;
 
 let readyindex = false;
