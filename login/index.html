@@ -7,7 +7,7 @@
     <aside id="header"></aside>
     <body>
         <div class="title">
-            <h1>早寝早起き朝ごはんアプリ</h1>
+            <h1 style="text-align: center;">早寝早起き朝ごはんアプリ</h1>
         </div>
         <!-- <h1 class="result fail">Result</h1> -->
         <h1 id="login" class="subtitle" style="text-align: center;">ログイン</h1>
@@ -107,9 +107,11 @@
             const acc_json = await fetch_accToken(json.t)
             document.cookie = `AccT=${acc_json.t}; path=/`
             showresult(true)
+            btn.textContent = 'ログイン'
 			switchButton(btn, false)
         } else {
             showresult(false)
+            btn.textContent = 'ログイン'
 			switchButton(btn, false)
         }
     }
@@ -135,4 +137,26 @@
 			}
         }
     }
+    const currentPageUrl = window.location.href;
+    console.log(currentPageUrl)
+    window.onload = function(){
+        const perfEntries = performance.getEntriesByType("navigation");
+        perfEntries.forEach(function(pe){
+            switch( pe.type ){
+                case 'navigate':
+                    console.log('通常のアクセス');
+                    break;
+                case 'reload':
+                    console.log('更新によるアクセス');
+                    break;
+                case 'back_forward':
+                    console.log('戻る/進むによるアクセス on login');
+                    location.href = '/'
+                    break;
+                case 'prerender':
+                    console.log('レンダリング前');
+                    break;
+                }
+        });
+    };
 </script>

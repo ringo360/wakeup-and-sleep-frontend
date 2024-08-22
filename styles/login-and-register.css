@@ -30,8 +30,9 @@
     }
     input[type=text] {
         width: 100%;
-        padding: 1em 0.5em;
+        padding: 0.5em 0.5em;
         margin: 0;
+        font-size: 3em;
     }
     label {
         width: 100%;
@@ -80,10 +81,11 @@
     }
     #slog {
         font-size: 1.25em;
-    }/* yo fuck off
+    }
     input[type=text] {
-        transform: scale(1.5);
-    }*/
+        padding: 0.25em 0.25em;
+        font-size: 2.5em;
+    }
 
 }
 
