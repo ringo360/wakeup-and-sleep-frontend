@@ -253,7 +253,7 @@ async function fetchSleepData() {
         row.appendChild(dateCell);
 
         const sleepTimeCell = document.createElement('td');
-        sleepTimeCell.textContent = sleepdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+        sleepTimeCell.textContent = sleepdate ? sleepdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) : '記録なし';
         row.appendChild(sleepTimeCell);
 
         const wakeupTimeCell = document.createElement('td');
