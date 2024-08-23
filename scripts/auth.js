@@ -1,6 +1,7 @@
 console.log('Called auth.js')
 
 const baseurl = 'https://was-api.a1z.uk'
+//const baseurl = 'https://p-dev.ringoxd.dev'
 let fail =0;
 
 let readyindex = false;
@@ -17,7 +18,7 @@ async function main() {
         fail++;
         console.log(`Retrying (${fail})`)
         if (res.status === 401) {
-            if (fail === 3) {
+            if (fail === 2) {
                 console.log('[!] Failed to login.')
                 goLogin()
             }

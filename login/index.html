@@ -1,15 +1,16 @@
 <head>
     <link rel="stylesheet" href="../styles/global.css" />
+    <link rel="stylesheet" href="../styles/login-and-register.css" />
     <title>(!)早寝早起き朝ごはんApp</title>
 </head>
 <html>
     <aside id="header"></aside>
     <body>
         <div class="title">
-            <h1>早寝早起き朝ごはんアプリ</h1>
+            <h1 style="text-align: center;">早寝早起き朝ごはんアプリ</h1>
         </div>
         <!-- <h1 class="result fail">Result</h1> -->
-        <h1 id="login" style="text-align: center;">ログイン</h1>
+        <h1 id="login" class="subtitle" style="text-align: center;">ログイン</h1>
         <div class="loginform">
             <label for="user">ユーザー名</label>
             <input type="text" id="user" name="username">
@@ -18,10 +19,10 @@
             <label for="user">パスワード</label>
             <input type="text" id="pass" name="password">
         </div>
-        <div class="loginform">
+        <div class="loginform flex-center">
             <button class="btnbase flex-center" id="btn" onclick="login()">ログイン</button>
         </div>
-		<p style="text-align: center;">アカウント作成は<a href="../register/index.html">こちら</a></p>
+		<p class="foot" style="text-align: center;">アカウント作成は<a href="../register/index.html">こちら</a></p>
     </body>
     <script src="/scripts/auth.js"></script>
     <script src="/scripts/util.js"></script>
@@ -35,7 +36,7 @@
 		justify-content: center;
 	}
 	.loginform {
-		display: flex;
+		/* display: flex; */
 		justify-content: center;
 	}
 	#btn, #graybtn {
@@ -107,10 +108,12 @@
             document.cookie = `AccT=${acc_json.t}; path=/`
 			btn.textContent = 'ログイン'
             showresult(true)
+            btn.textContent = 'ログイン'
 			switchButton(btn, false)
         } else {
 			btn.textContent = 'ログイン'
             showresult(false)
+            btn.textContent = 'ログイン'
 			switchButton(btn, false)
         }
     }
@@ -136,4 +139,26 @@
 			}
         }
     }
+    const currentPageUrl = window.location.href;
+    console.log(currentPageUrl)
+    window.onload = function(){
+        const perfEntries = performance.getEntriesByType("navigation");
+        perfEntries.forEach(function(pe){
+            switch( pe.type ){
+                case 'navigate':
+                    console.log('通常のアクセス');
+                    break;
+                case 'reload':
+                    console.log('更新によるアクセス');
+                    break;
+                case 'back_forward':
+                    console.log('戻る/進むによるアクセス on login');
+                    location.href = '/'
+                    break;
+                case 'prerender':
+                    console.log('レンダリング前');
+                    break;
+                }
+        });
+    };
 </script>

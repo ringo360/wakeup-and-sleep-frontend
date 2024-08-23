@@ -5,7 +5,11 @@ html {
 }
 
 
-
+/* fuck off
+.header {
+    font-size: 1em;
+}
+*/
 .app {
     /* border: 3px solid gray; */
     display: flex;
@@ -53,13 +57,13 @@ html {
 
 .btnbase {
 	transition: background 0.25s ease-in-out, transform 0.15s ease;
-	font-size: 1rem;
+	/* font-size: 1rem; */
     text-align: center;
     border-radius: 7px;
 	display: inline-block;
     border: none;
     padding: 1rem 2rem;
-    margin: 0;
+    margin: 0.25em;
 }
 
 #btn {
