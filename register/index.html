@@ -19,17 +19,30 @@
             <input type="text" id="pass" name="password">
         </div>
         <div class="registerform">
-            <button id="send" onclick="register()">登録</button>
+            <button class="btnbase" id="btn" onclick="register()">登録</button>
         </div>
     </body>
     <script src="/scripts/auth.js"></script>
+	<script src="/scripts/util.js"></script>
 </html>
 
 <style>
+	.register {
+		display: flex;
+		align-items: center;
+		align-content: center;
+		justify-content: center;
+	}
+	.registerform {
+		display: flex;
+		justify-content: center;
+	}
+	#btn, #graybtn {
+		margin: 1em;
+	}
     .result {
         display: block;
         text-align: center;
-        
         transition: all 0.5s ease;
     }
     .success {
@@ -65,8 +78,9 @@
     //tysm - https://stackoverflow.com/questions/35325370/how-do-i-post-a-x-www-form-urlencoded-request-using-fetch
 
     async function register() {
-        const btn = document.getElementById('send')
+        const btn = document.getElementById('btn')
         btn.textContent = '登録中...'
+		switchButton(btn, true)
         const usr = await document.getElementById('user')
         const pass = await document.getElementById('pass')
         const details = {
@@ -83,12 +97,26 @@
         const res = await postAPI(formBody, '/auth/register')
 		if (!res.ok) {
 			if (res.status === 400) {
-				showresult(false, 'そのユーザーは既に存在します！')
+				const json = await res.json()
+				console.log(json)
+				if (json.Result === 'Already exists') {
+					showresult(false, 'そのユーザーは既に存在します！')
+				} else if (json.Result === 'Invalid Request') {
+					showresult(false, 'エラーが発生しました(値が無効です！)')
+				} else {
+					showresult(false, `エラーが発生しました(${json.Result})`)
+				}
+				btn.textContent = '登録'
+				switchButton(btn, false)
 			} else {
+				btn.textContent = '登録'
 				showresult(false, `内部エラーが発生しました(${res.status})`)
+				switchButton(btn, false)
 			}
 		} else {
+			btn.textContent = '登録'
 			showresult(true)
+			switchButton(btn, false)
 		}
 
     }
