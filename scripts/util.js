@@ -6,3 +6,9 @@ function switchButton(elem, bool) {
 		elem.id = 'btn'
 	}
 }
+
+async function launchFireworks(time) {
+    fireworks.start()
+	await wait(time)
+	fireworks.waitStop(true)
+}
