@@ -271,6 +271,26 @@ async function fetchSleepData() {
     });
 }
 
+//TODO: うまくつかう
+function calculateTimeDifference(sleepDate, wakeUpdate) {
+    const sleepDateTime = new Date(sleepDate);
+    const wakeUpdateDateTime = new Date(wakeUpdate);
+  
+    const timeDifference = wakeUpdateDateTime.getTime() - sleepDateTime.getTime();
+  
+    const seconds = Math.floor(timeDifference / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+  
+    if (hours > 0) {
+      return `${hours}時間`;
+    } else if (minutes > 0) {
+      return `${minutes}分`;
+    } else {
+      return `${seconds}秒`;
+    }
+}
+
 function formatDate(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
