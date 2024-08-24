@@ -221,51 +221,54 @@ async function fetchSleepData() {
     const res = await getSleepRes(token, json.res.user);
     const data = await res.json();
 
-
     const dataArray = Object.keys(data).map(key => ({
         ...data[key],
         id: key
     }));
 
+    dataArray.sort((a, b) => new Date(b.wakeupdate) - new Date(a.wakeupdate));
 
-    dataArray.sort((a, b) => new Date(b.sleepdate) - new Date(a.sleepdate));
-
-    // Select the latest 7 records
+    // 最新の7件を取得
     const latest7 = dataArray.slice(0, 7);
-	latest7.sort((a, b) => new Date(a.sleepdate) - new Date(b.sleepdate));
+    latest7.sort((a, b) => new Date(a.wakeupdate) - new Date(b.wakeupdate));
 
     const table = document.getElementById('slog');
 
-    // use if need
-	
+    // テーブルをリセット
     while (table.rows.length > 1) {
         table.deleteRow(1);
     }
-	
-    latest7.forEach(record => {
-        const sleepdate = new Date(record.sleepdate);
-        const wakeupdate = record.wakeupdate ? new Date(record.wakeupdate) : null;
 
+    latest7.forEach(record => {
         const row = document.createElement('tr');
 
+		//const
+		const wakeupdate = record.wakeupdate ? new Date(record.wakeupdate) : null;
+		const sleepdate = record.sleepdate ? new Date(record.sleepdate) : null;
+
+        // 日付の処理
         const dateCell = document.createElement('td');
-        dateCell.textContent = formatDate(sleepdate);
+		console.log(wakeupdate)
+        dateCell.textContent = wakeupdate ? formatDate(wakeupdate) : '記録なし';
         row.appendChild(dateCell);
 
-        const sleepTimeCell = document.createElement('td');
-        sleepTimeCell.textContent = sleepdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
-        row.appendChild(sleepTimeCell);
-
+        // 起床時刻 (wakeupdate) の処理
         const wakeupTimeCell = document.createElement('td');
         wakeupTimeCell.textContent = wakeupdate ? wakeupdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) : '記録なし';
         row.appendChild(wakeupTimeCell);
-        
-        const CheckCell = document.createElement('td');
-        const CheckBox = document.createElement('input');
-        CheckBox.type = 'checkbox';
-        CheckBox.onclick = checkbf(this)
-        CheckCell.appendChild(CheckBox)
-        row.appendChild(CheckCell)
+
+        // 就寝時刻 (sleepdate) の処理
+        const sleepTimeCell = document.createElement('td');
+        sleepTimeCell.textContent = sleepdate ? sleepdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) : '記録なし';
+        row.appendChild(sleepTimeCell);
+
+        // 朝食チェックボックスの追加
+        const checkCell = document.createElement('td');
+        const checkBox = document.createElement('input');
+        checkBox.type = 'checkbox';
+        checkBox.onclick = checkbf; // 修正: 'this' を直接使わない
+        checkCell.appendChild(checkBox);
+        row.appendChild(checkCell);
 
         table.appendChild(row);
     });

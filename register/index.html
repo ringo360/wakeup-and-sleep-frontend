@@ -19,24 +19,24 @@
             <label for="user">パスワード</label>
             <input type="text" id="pass" name="password">
         </div>
-        <div class="registerform flex-center">
-            <button class="btnbase flex-center" id="btn" onclick="register()">登録</button>
+        <div class="registerform">
+            <button class="btnbase" id="btn" onclick="register()">登録</button>
         </div>
         <p class="foot" style="text-align: center;">ユーザー名とパスワードは英数字のみ入力できます。</p>
     </body>
     <script src="/scripts/auth.js"></script>
-    <script src="/scripts/util.js"></script>
+	<script src="/scripts/util.js"></script>
 </html>
 
 <style>
-    .register {
+	.register {
 		display: flex;
 		align-items: center;
 		align-content: center;
 		justify-content: center;
 	}
 	.registerform {
-		/* display: flex; */
+		display: flex;
 		justify-content: center;
 	}
 	#btn, #graybtn {
@@ -45,7 +45,6 @@
     .result {
         display: block;
         text-align: center;
-        
         transition: all 0.5s ease;
     }
     .success {
@@ -84,7 +83,7 @@
     async function register() {
         const btn = document.getElementById('btn')
         btn.textContent = '登録中...'
-        switchButton(btn, true)
+		switchButton(btn, true)
         const usr = await document.getElementById('user')
         const pass = await document.getElementById('pass')
         console.log(regex.test(usr.value))
@@ -108,18 +107,26 @@
         const res = await postAPI(formBody, '/auth/register')
 		if (!res.ok) {
 			if (res.status === 400) {
-                switchButton(btn, false)
-                btn.textContent = '登録'
-				showresult(false, 'そのユーザーは既に存在します！')
+				const json = await res.json()
+				console.log(json)
+				if (json.Result === 'Already exists') {
+					showresult(false, 'そのユーザーは既に存在します！')
+				} else if (json.Result === 'Invalid Request') {
+					showresult(false, 'エラーが発生しました(値が無効です！)')
+				} else {
+					showresult(false, `エラーが発生しました(${json.Result})`)
+				}
+				btn.textContent = '登録'
+				switchButton(btn, false)
 			} else {
-                switchButton(btn, false)
-                btn.textContent = '登録'
+				btn.textContent = '登録'
 				showresult(false, `内部エラーが発生しました(${res.status})`)
+				switchButton(btn, false)
 			}
 		} else {
-            switchButton(btn, false)
-            btn.textContent = '登録'
+			btn.textContent = '登録'
 			showresult(true)
+			switchButton(btn, false)
 		}
 
     }

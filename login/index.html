@@ -106,10 +106,12 @@
             // await delay(500) delay
             const acc_json = await fetch_accToken(json.t)
             document.cookie = `AccT=${acc_json.t}; path=/`
+			btn.textContent = 'ログイン'
             showresult(true)
             btn.textContent = 'ログイン'
 			switchButton(btn, false)
         } else {
+			btn.textContent = 'ログイン'
             showresult(false)
             btn.textContent = 'ログイン'
 			switchButton(btn, false)
