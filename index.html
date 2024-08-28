@@ -7,12 +7,14 @@
 
 <html>
     <body>
+        <script async src="https://cdn.jsdelivr.net/npm/fireworks-js@2.x/dist/index.umd.js"></script>
         <script src="index.js"></script>
+        <script async src="/scripts/util.js"></script>
         <script src="/scripts/auth.js"></script>
         <script src="/scripts/header.js"></script>
         <script src="/scripts/util.js"></script>
         <aside id="header"></aside>
-        <div class="app">
+        <div class="app" id="app">
             <div class="title">
                 <h1>早寝早起き朝ごはんアプリ</h1>
             </div>
@@ -36,12 +38,13 @@
                         <td>...</td>
                         <td>...</td>
                         <td>...</td>
-                        <td><input type="checkbox" onclick="checkbf(this)"></td>
+                        <td><input type="checkbox" onchange="checkbf(this)"></td>
                     </tr>
 					<!-- data -->
                 </table>
             </div>
         </div>
+        <div id="overlay"></div>
     </body>
 </html>
 
@@ -61,6 +64,10 @@
 
 <script>
     function checkbf(elem) {
+        console.log(elem)
         console.log(elem.checked)
+        if (elem.checked === true) {
+            launchFireworks(3000)
+        }
     }
 </script>

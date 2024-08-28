@@ -14,3 +14,9 @@ function switchButtonbyClassName(elem, bool) {
 		elem.classList.replace('graybtn', 'btn')
 	}
 }
+
+async function launchFireworks(time) {
+    fireworks.start()
+	await wait(time)
+	fireworks.waitStop(true)
+}
