@@ -51,11 +51,9 @@ async function callbtn() {
 
 function wait(time){return new Promise((resolve)=>{setTimeout(resolve, time)})}
 
-
 async function fire(x) {
 	if (!can_fire) return;
     console.log(sleeping)
-    launchFireworks(3000)
     if (sleeping === true) {
         wakeup(x)
         return;

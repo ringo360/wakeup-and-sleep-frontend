@@ -10,7 +10,7 @@
         <script async src="https://cdn.jsdelivr.net/npm/fireworks-js@2.x/dist/index.umd.js"></script>
         <script src="index.js"></script>
         <script async src="/scripts/util.js"></script>
-        <script async src="/scripts/auth.js"></script>
+        <script src="/scripts/auth.js"></script>
         <script async src="/scripts/header.js"></script>
         <script async src="/scripts/particle.js"></script>
         <aside id="header"></aside>
@@ -37,7 +37,7 @@
                         <td>...</td>
                         <td>...</td>
                         <td>...</td>
-                        <td><input type="checkbox" onclick="checkbf(this)"></td>
+                        <td><input type="checkbox" onchange="checkbf(this)"></td>
                     </tr>
 					<!-- data -->
                 </table>
@@ -63,6 +63,10 @@
 
 <script>
     function checkbf(elem) {
+        console.log(elem)
         console.log(elem.checked)
+        if (elem.checked === true) {
+            launchFireworks(3000)
+        }
     }
 </script>
