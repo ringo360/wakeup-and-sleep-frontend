@@ -42,7 +42,7 @@ html {
     text-align: center;
 }
 
-#graybtn {
+.graybtn {
     background: #797979;
     color: white;
 
@@ -66,15 +66,15 @@ html {
     margin: 0.25em;
 }
 
-#btn {
+.btn {
     background: #0069ed;
     color: white;
 }
 
-#btn:hover,
-#btn:focus {
+.btn:hover,
+.btn:focus {
     background: #0053ba;
 }
-#btn:active {
+.btn:active {
     transform: scale(0.95)
 }
