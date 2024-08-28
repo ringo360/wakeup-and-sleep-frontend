@@ -16,11 +16,16 @@ async function caller() {
     if (called === true) return;
     called = true;
     main()
-	initbtn()
+	initwakeupbtn()
     console.log('Sucessfully called index.js')
 }
 
-async function initbtn() {
+async function initsleepbtn() {
+	const x = document.getElementById('sleep')
+	switchButtonbyClassName(x, false)
+}
+
+async function initwakeupbtn() {
 	const token = await getAccToken()
 	const info = await getInfo(token)
 	if (!info.ok) {
@@ -35,9 +40,11 @@ async function initbtn() {
 		sleeping = true
 		x.textContent = '起床'
 		switchButtonbyClassName(x, false)
+		initsleepbtn()
 	} else {
 		sleeping = false
 		switchButtonbyClassName(x, false)
+		initsleepbtn()
 	}
 	await wait(50)
 	can_fire = true
