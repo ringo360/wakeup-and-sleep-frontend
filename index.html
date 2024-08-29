@@ -18,9 +18,20 @@
             <div class="title">
                 <h1>早寝早起き朝ごはんアプリ</h1>
             </div>
+			<div class="inputs" style="display: flex; margin: 1em">
+				<input type="number" name="whrs" style="width: 7em" id="wakeuphr" min="0" max="23">
+				<label style="margin:0.5em" for="whrs">時</label>
+				
+				<input type="number" name="wmin" style="width: 7em" id="wakeupmin" min="0" max="59">
+				<label style="margin:0.5em" for="wmin">分</label>
+				
+				<input type="number" name="wsec" style="width: 7em" id="wakeupsec" min="0" max="59">
+				<label style="margin:0.5em" for="wsec">秒</label>
+			</div>
             <div class="buttons">
                 <button id="wakeup" class="btnbase graybtn" onclick="wakeup(this)">Loading...</button>
                 <button id="sleep" class="btnbase graybtn" onclick="sleep(this)">Loading...</button>
+                <button id="breakfast" class="btnbase graybtn" onclick="breakfast(this)">Loading...</button>
             </div>
             <hr id="mainhr">
             <div class="list">

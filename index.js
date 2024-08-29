@@ -20,10 +20,13 @@ async function caller() {
     console.log('Sucessfully called index.js')
 }
 
-async function initsleepbtn() {
+async function initotherbtn() {
 	const x = document.getElementById('sleep')
 	x.textContent = '就寝'
 	switchButtonbyClassName(x, false)
+	const x2 = document.getElementById('breakfast')
+	x2.textContent = '朝食'
+	switchButtonbyClassName(x2, false)
 }
 
 async function initwakeupbtn() {
@@ -41,12 +44,12 @@ async function initwakeupbtn() {
 		sleeping = true
 		x.textContent = '起床'
 		switchButtonbyClassName(x, false)
-		initsleepbtn()
+		initotherbtn()
 	} else {
 		sleeping = false
 		x.textContent = '起床'
 		switchButtonbyClassName(x, false)
-		initsleepbtn()
+		initotherbtn()
 	}
 	await wait(50)
 	can_fire = true
