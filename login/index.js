@@ -3,9 +3,9 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 //tysm - https://stackoverflow.com/questions/35325370/how-do-i-post-a-x-www-form-urlencoded-request-using-fetch
 
 async function login() {
-	const btn = document.getElementById('btn')
+	const btn = document.getElementById('loginbtn')
 	btn.textContent = 'ログイン中...'
-	switchButton(btn, true)
+	switchButtonbyClassName(btn, true)
 	const usr = await document.getElementById('user')
 	const pass = await document.getElementById('pass')
 	const details = {
@@ -29,15 +29,15 @@ async function login() {
 		// await delay(500) delay
 		const acc_json = await fetch_accToken(json.t)
 		document.cookie = `AccT=${acc_json.t}; path=/`
-		btn.textContent = 'ログイン'
 		showresult(true)
 		btn.textContent = 'ログイン'
-		switchButton(btn, false)
+		await delay(250)
+		switchButtonbyClassName(btn, false)
 	} else {
-		btn.textContent = 'ログイン'
 		showresult(false)
 		btn.textContent = 'ログイン'
-		switchButton(btn, false)
+		await delay(250)
+		switchButtonbyClassName(btn, false)
 	}
 }
 async function showresult(isSuccess) {
@@ -52,7 +52,6 @@ async function showresult(isSuccess) {
 		}
 		location.href = '../index.html'
 	} else {
-		
 		const elem = document.getElementById('login')
 		elem.insertAdjacentHTML('beforebegin', '<h1 class="result fail">ユーザー・パスワードが違います</h1>')
 		await delay(2000)
