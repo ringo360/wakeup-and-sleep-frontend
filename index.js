@@ -17,7 +17,15 @@ async function caller() {
     called = true;
     main()
 	initwakeupbtn()
+	setNowDate()
     console.log('Sucessfully called index.js')
+}
+
+function setNowDate() {
+	const now = new Date();
+    document.getElementById('wakeuphr').value = now.getHours();
+    document.getElementById('wakeupmin').value = now.getMinutes();
+    document.getElementById('wakeupsec').value = now.getSeconds();
 }
 
 async function initotherbtn() {
@@ -129,9 +137,9 @@ async function addList(mode) {
 	        const mon = fmtTime(`${now.getMonth() + 1}`)
             console.log(mon)
     	    const day = fmtTime(`${now.getDate()}`)
-            const hour = fmtTime(`${now.getHours()}`)
-            const min = fmtTime(`${now.getMinutes()}`)
-			const sec = fmtTime(`${now.getSeconds()}`)
+            const hour = document.getElementById('wakeuphr').value
+            const min = document.getElementById('wakeupmin').value
+			const sec = document.getElementById('wakeupsec').value
             const time = `${hour}:${min}`
 			const token = await getAccToken()
 			const res = await getInfo(token)
@@ -150,9 +158,9 @@ async function addList(mode) {
         console.log(mon)
         const day = fmtTime(`${now.getDate()}`)
         const today = `${year}/${mon}/${day}`
-        const hour = fmtTime(`${now.getHours()}`)
-        const min = fmtTime(`${now.getMinutes()}`)
-		const sec = fmtTime(`${now.getSeconds()}`)
+        const hour = document.getElementById('wakeuphr').value
+        const min = document.getElementById('wakeupmin').value
+		const sec = document.getElementById('wakeupsec').value
         const time = `${hour}:${min}`
         elem.insertAdjacentHTML(`beforeend`, `<tr><td>${today}</td><td>${time}</td><td>記録なし</td><td><input type="checkbox" id="breakfast" onclick="checkbf(tdis)"></td></tr>`)
 		const token = await getAccToken()
@@ -255,20 +263,21 @@ async function fetchSleepData() {
         const row = document.createElement('tr');
 
         const dateCell = document.createElement('td');
-        dateCell.textContent = sleepdate ? formatDate(sleepdate) : formatDate(wakeupdate);
+        dateCell.textContent = wakeupdate ? formatDate(wakeupdate) : formatDate(sleepdate);
         row.appendChild(dateCell);
 
+		const wakeupTimeCell = document.createElement('td');
+        wakeupTimeCell.textContent = wakeupdate 
+            ? wakeupdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) 
+            : '記録なし';
+        row.appendChild(wakeupTimeCell);
+		
         const sleepTimeCell = document.createElement('td');
         sleepTimeCell.textContent = sleepdate 
             ? sleepdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) 
             : '記録なし';
         row.appendChild(sleepTimeCell);
 
-        const wakeupTimeCell = document.createElement('td');
-        wakeupTimeCell.textContent = wakeupdate 
-            ? wakeupdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) 
-            : '記録なし';
-        row.appendChild(wakeupTimeCell);
 
         const checkCell = document.createElement('td');
         const checkBox = document.createElement('input');
