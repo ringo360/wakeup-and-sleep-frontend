@@ -207,7 +207,7 @@ async function fetchSleepData() {
     const info = await getInfo(token);
 
     if (!info.ok) {
-        console.error('response is not ok, returing...');
+        console.error('response is not ok, returning...');
         return;
     }
 
@@ -215,68 +215,64 @@ async function fetchSleepData() {
     const res = await getSleepRes(token, json.res.user);
     const data = await res.json();
 
-    // 同じ日付のデータの中で一番遅い sleepdate のものを抽出し、null は無視
-    const filteredData = Object.values(data).reduce((acc, record) => {
-        const sleepdate = record.sleepdate ? new Date(record.sleepdate) : null;
-        const wakeupdate = record.wakeupdate ? new Date(record.wakeupdate) : null;
+    // 日付ごとに一番遅い時間を抽出する
+    const latestRecords = Object.values(data)
+        .filter(record => record.sleepdate && record.wakeupdate) // nullを無視
+        .reduce((acc, record) => {
+            const sleepDate = new Date(record.sleepdate);
+            const wakeupDate = new Date(record.wakeupdate);
 
-        if (sleepdate) {
-            const dateKey = sleepdate.toISOString().split('T')[0]; // 日付部分をキーにする
+            const dateKey = sleepDate.toISOString().split('T')[0]; // 日付だけをキーとして使用
 
-            // 最も遅い sleepdate を持つレコードを選択
-            if (!acc[dateKey] || sleepdate.getTime() > new Date(acc[dateKey].sleepdate).getTime()) {
-                acc[dateKey] = record;
+            if (!acc[dateKey] || sleepDate > new Date(acc[dateKey].sleepdate)) {
+                acc[dateKey] = {
+                    sleepdate: record.sleepdate,
+                    wakeupdate: record.wakeupdate
+                };
             }
-        }
-        return acc;
-    }, {});
 
-    const dataArray = Object.values(filteredData);
-    dataArray.sort((a, b) => new Date(b.sleepdate) - new Date(a.sleepdate));
+            if (record.wakeupdate && (!acc[dateKey].wakeupdate || wakeupDate > new Date(acc[dateKey].wakeupdate))) {
+                acc[dateKey].wakeupdate = record.wakeupdate;
+            }
 
-    // 最新の7件を取得
-    const latest7 = dataArray.slice(0, 7);
-    latest7.sort((a, b) => new Date(a.sleepdate) - new Date(b.sleepdate));
+            return acc;
+        }, {});
 
+    // 結果をテーブルに追加
     const table = document.getElementById('slog');
 
-    // テーブルをリセット
     while (table.rows.length > 1) {
         table.deleteRow(1);
     }
 
-    latest7.forEach(record => {
+    Object.values(latestRecords).forEach(record => {
+        const sleepdate = new Date(record.sleepdate);
+        const wakeupdate = record.wakeupdate ? new Date(record.wakeupdate) : null;
+
         const row = document.createElement('tr');
 
-        // 日付の処理
-        const sleepdate = record.sleepdate ? new Date(record.sleepdate) : null;
         const dateCell = document.createElement('td');
-        dateCell.textContent = sleepdate ? formatDate(sleepdate) : '記録なし';
+        dateCell.textContent = formatDate(sleepdate);
         row.appendChild(dateCell);
 
-        // 起床時刻 (wakeupdate) の処理
-        const wakeupdate = record.wakeupdate ? new Date(record.wakeupdate) : null;
+        const sleepTimeCell = document.createElement('td');
+        sleepTimeCell.textContent = sleepdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+        row.appendChild(sleepTimeCell);
+
         const wakeupTimeCell = document.createElement('td');
         wakeupTimeCell.textContent = wakeupdate ? wakeupdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) : '記録なし';
         row.appendChild(wakeupTimeCell);
 
-        // 就寝時刻 (sleepdate) の処理
-        const sleepTimeCell = document.createElement('td');
-        sleepTimeCell.textContent = sleepdate ? sleepdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) : '記録なし';
-        row.appendChild(sleepTimeCell);
-
-        // 朝食チェックボックスの追加
         const checkCell = document.createElement('td');
         const checkBox = document.createElement('input');
         checkBox.type = 'checkbox';
-        checkBox.onclick = checkbf; // 修正: 'this' を直接使わない
+        checkBox.onclick = checkbf(this);
         checkCell.appendChild(checkBox);
         row.appendChild(checkCell);
 
         table.appendChild(row);
     });
 }
-
 
 
 //TODO: うまくつかう
