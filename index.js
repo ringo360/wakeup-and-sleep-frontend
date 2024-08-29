@@ -215,12 +215,12 @@ async function fetchSleepData() {
     const res = await getSleepRes(token, json.res.user);
     const data = await res.json();
 
-    // 同じ日付のデータの中で一番遅い時間のものを抽出し、nullは無視
+    // 同じ日付のデータの中で一番遅い sleepdate のものを抽出し、null は無視
     const filteredData = Object.values(data).reduce((acc, record) => {
         const sleepdate = record.sleepdate ? new Date(record.sleepdate) : null;
         const wakeupdate = record.wakeupdate ? new Date(record.wakeupdate) : null;
 
-        if (sleepdate && wakeupdate) {
+        if (sleepdate) {
             const dateKey = sleepdate.toISOString().split('T')[0]; // 日付部分をキーにする
 
             // 最も遅い sleepdate を持つレコードを選択
@@ -276,6 +276,7 @@ async function fetchSleepData() {
         table.appendChild(row);
     });
 }
+
 
 
 //TODO: うまくつかう
