@@ -44,6 +44,7 @@ async function initwakeupbtn() {
 		initsleepbtn()
 	} else {
 		sleeping = false
+		x.textContent = '起床'
 		switchButtonbyClassName(x, false)
 		initsleepbtn()
 	}
@@ -51,11 +52,6 @@ async function initwakeupbtn() {
 	can_fire = true
 }
 
-async function callbtn() {
-    const x = document.getElementById('wakeup')
-    if (sleeping) x.textContent = '起床'
-    else x.textContent = '就寝'
-}
 
 function wait(time){return new Promise((resolve)=>{setTimeout(resolve, time)})}
 
@@ -87,7 +83,7 @@ async function sleep(x) {
     sleeping = true;
     await wait(2000)
     // x.value ='起床'
-    callbtn()
+    x.textContent = '就寝'
     sleep_alr = false;
 }
 
@@ -101,7 +97,7 @@ async function wakeup(x) {
     x.textContent = '🌞'
     sleeping = false;
     await wait(2000)
-    callbtn()
+    x.textContent = '起床'
     wakeup_alr = false;
 }
 
