@@ -188,16 +188,6 @@ async function shouldRemove() {
         const firstRow = rows[1]; // ヘッダ行の次の行を取得
 		if (firstRow) {
             firstRow.remove();
-			/*
-			const token = await getAccToken()
-			const info = await getInfo(token)
-			if (!info.ok) {
-				console.error('response is not ok, returing...')
-				return;
-			}
-			const json = await info.json()
-			await deleteAPI(token, json.res.user, '/v1/sleep')
-			*/
 		}
     }
 }
@@ -225,16 +215,27 @@ async function fetchSleepData() {
     const res = await getSleepRes(token, json.res.user);
     const data = await res.json();
 
-    const dataArray = Object.keys(data).map(key => ({
-        ...data[key],
-        id: key
-    }));
+    // 同じ日付のデータの中で一番遅い時間のものを抽出し、nullは無視
+    const filteredData = Object.values(data).reduce((acc, record) => {
+        const sleepdate = record.sleepdate ? new Date(record.sleepdate) : null;
+        const wakeupdate = record.wakeupdate ? new Date(record.wakeupdate) : null;
 
-    dataArray.sort((a, b) => new Date(b.wakeupdate) - new Date(a.wakeupdate));
+        if (sleepdate && wakeupdate) {
+            const dateKey = sleepdate.toISOString().split('T')[0]; // 日付部分をキーにする
+
+            if (!acc[dateKey] || sleepdate > acc[dateKey].sleepdate) {
+                acc[dateKey] = record;
+            }
+        }
+        return acc;
+    }, {});
+
+    const dataArray = Object.values(filteredData);
+    dataArray.sort((a, b) => new Date(b.sleepdate) - new Date(a.sleepdate));
 
     // 最新の7件を取得
     const latest7 = dataArray.slice(0, 7);
-    latest7.sort((a, b) => new Date(a.wakeupdate) - new Date(b.wakeupdate));
+    latest7.sort((a, b) => new Date(a.sleepdate) - new Date(b.sleepdate));
 
     const table = document.getElementById('slog');
 
@@ -246,17 +247,14 @@ async function fetchSleepData() {
     latest7.forEach(record => {
         const row = document.createElement('tr');
 
-		//const
-		const wakeupdate = record.wakeupdate ? new Date(record.wakeupdate) : null;
-		const sleepdate = record.sleepdate ? new Date(record.sleepdate) : null;
-
         // 日付の処理
+        const sleepdate = record.sleepdate ? new Date(record.sleepdate) : null;
         const dateCell = document.createElement('td');
-		console.log(wakeupdate)
-        dateCell.textContent = wakeupdate ? formatDate(wakeupdate) : '記録なし';
+        dateCell.textContent = sleepdate ? formatDate(sleepdate) : '記録なし';
         row.appendChild(dateCell);
 
         // 起床時刻 (wakeupdate) の処理
+        const wakeupdate = record.wakeupdate ? new Date(record.wakeupdate) : null;
         const wakeupTimeCell = document.createElement('td');
         wakeupTimeCell.textContent = wakeupdate ? wakeupdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) : '記録なし';
         row.appendChild(wakeupTimeCell);
@@ -277,6 +275,7 @@ async function fetchSleepData() {
         table.appendChild(row);
     });
 }
+
 
 //TODO: うまくつかう
 function calculateTimeDifference(sleepDate, wakeUpdate) {
