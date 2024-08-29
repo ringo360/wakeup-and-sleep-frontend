@@ -22,6 +22,7 @@ async function caller() {
 
 async function initsleepbtn() {
 	const x = document.getElementById('sleep')
+	x.textContent = '就寝'
 	switchButtonbyClassName(x, false)
 }
 
