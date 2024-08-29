@@ -223,7 +223,8 @@ async function fetchSleepData() {
         if (sleepdate && wakeupdate) {
             const dateKey = sleepdate.toISOString().split('T')[0]; // 日付部分をキーにする
 
-            if (!acc[dateKey] || sleepdate > acc[dateKey].sleepdate) {
+            // 最も遅い sleepdate を持つレコードを選択
+            if (!acc[dateKey] || sleepdate.getTime() > new Date(acc[dateKey].sleepdate).getTime()) {
                 acc[dateKey] = record;
             }
         }
