@@ -215,28 +215,28 @@ async function fetchSleepData() {
     const res = await getSleepRes(token, json.res.user);
     const data = await res.json();
 
-    // 日付ごとに一番遅い時間を抽出する
-    const latestRecords = Object.values(data)
-        .filter(record => record.sleepdate && record.wakeupdate) // nullを無視
-        .reduce((acc, record) => {
-            const sleepDate = new Date(record.sleepdate);
-            const wakeupDate = new Date(record.wakeupdate);
+    // 日付ごとに一番遅い時間を抽出し、合成する
+    const latestRecords = Object.values(data).reduce((acc, record) => {
+        const sleepDate = record.sleepdate ? new Date(record.sleepdate) : null;
+        const wakeupDate = record.wakeupdate ? new Date(record.wakeupdate) : null;
 
-            const dateKey = sleepDate.toISOString().split('T')[0]; // 日付だけをキーとして使用
+        const dateKey = sleepDate 
+            ? sleepDate.toISOString().split('T')[0] 
+            : wakeupDate.toISOString().split('T')[0];
 
-            if (!acc[dateKey] || sleepDate > new Date(acc[dateKey].sleepdate)) {
-                acc[dateKey] = {
-                    sleepdate: record.sleepdate,
-                    wakeupdate: record.wakeupdate
-                };
+        if (!acc[dateKey]) {
+            acc[dateKey] = { sleepdate: record.sleepdate, wakeupdate: record.wakeupdate };
+        } else {
+            if (sleepDate && (!acc[dateKey].sleepdate || sleepDate > new Date(acc[dateKey].sleepdate))) {
+                acc[dateKey].sleepdate = record.sleepdate;
             }
-
-            if (record.wakeupdate && (!acc[dateKey].wakeupdate || wakeupDate > new Date(acc[dateKey].wakeupdate))) {
+            if (wakeupDate && (!acc[dateKey].wakeupdate || wakeupDate > new Date(acc[dateKey].wakeupdate))) {
                 acc[dateKey].wakeupdate = record.wakeupdate;
             }
+        }
 
-            return acc;
-        }, {});
+        return acc;
+    }, {});
 
     // 結果をテーブルに追加
     const table = document.getElementById('slog');
@@ -246,21 +246,25 @@ async function fetchSleepData() {
     }
 
     Object.values(latestRecords).forEach(record => {
-        const sleepdate = new Date(record.sleepdate);
+        const sleepdate = record.sleepdate ? new Date(record.sleepdate) : null;
         const wakeupdate = record.wakeupdate ? new Date(record.wakeupdate) : null;
 
         const row = document.createElement('tr');
 
         const dateCell = document.createElement('td');
-        dateCell.textContent = formatDate(sleepdate);
+        dateCell.textContent = sleepdate ? formatDate(sleepdate) : formatDate(wakeupdate);
         row.appendChild(dateCell);
 
         const sleepTimeCell = document.createElement('td');
-        sleepTimeCell.textContent = sleepdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+        sleepTimeCell.textContent = sleepdate 
+            ? sleepdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) 
+            : '記録なし';
         row.appendChild(sleepTimeCell);
 
         const wakeupTimeCell = document.createElement('td');
-        wakeupTimeCell.textContent = wakeupdate ? wakeupdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) : '記録なし';
+        wakeupTimeCell.textContent = wakeupdate 
+            ? wakeupdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) 
+            : '記録なし';
         row.appendChild(wakeupTimeCell);
 
         const checkCell = document.createElement('td');
