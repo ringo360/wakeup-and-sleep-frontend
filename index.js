@@ -81,7 +81,7 @@ async function sleep(x) {
     }
     sleep_alr = true;
     // x.value = 'It works!'
-    await addList()
+    await addList('sleep')
     x.textContent = '🌙'
     // x.textContent = '🌞'
     sleeping = true;
@@ -96,7 +96,7 @@ async function wakeup(x) {
         return;
     }
     wakeup_alr = true;
-    await addList()
+    await addList('wakeup')
     // x.textContent = '🌙'
     x.textContent = '🌞'
     sleeping = false;
@@ -105,7 +105,7 @@ async function wakeup(x) {
     wakeup_alr = false;
 }
 
-async function addList() {
+async function addList(mode) {
     if (sleeping === false) {
         const rows = document.querySelectorAll('#slog tr');
         let row = null;
@@ -137,7 +137,7 @@ async function addList() {
 			const token = await getAccToken()
 			const res = await getInfo(token)
 			const json = await res.json()
-			postSleepData(token, json.res.user, `${year}-${mon}-${day} ${time}:${sec}`)
+			postSleepData(token, json.res.user, `${year}-${mon}-${day} ${time}:${sec}`, mode)
             row.cells[row.cells.length - 2].textContent = time;
         } else {
             console.error('oops')
@@ -163,14 +163,14 @@ async function addList() {
 			return;
 		}
 		const json = await res.json()
-		postSleepData(token, json.res.user, `${year}-${mon}-${day} ${time}:${sec}`)
+		postSleepData(token, json.res.user, `${year}-${mon}-${day} ${time}:${sec}`, mode)
         shouldRemove()
         //削除
         // document.getElementById('slog').firstElementChild.children[1].remove()
     }
 }
 
-async function postSleepData(token, username, date) {
+async function postSleepData(token, username, date, mode) {
 	let formBody = []
 	const post_token = encodeURIComponent(token)
 	const user = encodeURIComponent(username)
@@ -179,7 +179,7 @@ async function postSleepData(token, username, date) {
 	formBody.push('username=' + user)
 	formBody.push('date=' + post_date)
 	formBody = await formBody.join("&")
-	const res = await postAPI(formBody, '/v1/sleep')
+	const res = await postAPI(formBody, `/v1/${mode}`)
 	if (res.ok) return true;
 	else return false;
 }
