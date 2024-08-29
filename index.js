@@ -83,15 +83,16 @@ async function fire(x) {
 }
 
 async function sleep(x) {
+	console.log('Called sleep')
     if (sleep_alr === true) {
         return;
     }
     sleep_alr = true;
     // x.value = 'It works!'
+	sleeping = true;
     await addList('sleep')
     x.textContent = '🌙'
     // x.textContent = '🌞'
-    sleeping = true;
     await wait(2000)
     // x.value ='起床'
     x.textContent = '就寝'
@@ -103,77 +104,101 @@ async function wakeup(x) {
         return;
     }
     wakeup_alr = true;
+	sleeping = false;
     await addList('wakeup')
     // x.textContent = '🌙'
     x.textContent = '🌞'
-    sleeping = false;
     await wait(2000)
     x.textContent = '起床'
     wakeup_alr = false;
 }
 
 async function addList(mode) {
-    if (sleeping === false) {
-        const rows = document.querySelectorAll('#slog tr');
-        let row = null;
+    const now = new Date();
+    const year = now.getFullYear();
+    const mon = fmtTime(`${now.getMonth() + 1}`);
+    const day = fmtTime(`${now.getDate()}`);
+    const hour = document.getElementById('wakeuphr').value;
+    const min = document.getElementById('wakeupmin').value;
+    const sec = document.getElementById('wakeupsec').value;
+    const time = `${hour}:${min}`;
+    const fullDate = `${year}-${mon}-${day} ${time}:${sec}`;
+    const today = `${year}/${mon}/${day}`;
 
-        for (const r of rows) {
-            const cells = r.querySelectorAll('td');
-            console.log(cells)
-            console.log(cells.length)
-            if (cells[cells.length - 2]) {
-                console.log(cells[cells.length - 2].textContent)
-            }
-            if (cells.length > 0 && cells[cells.length - 2].textContent === '記録なし') {
-                console.log('Matched')
-                row = r;
-                break;
-            }
+    const table = document.getElementById('slog');
+    let existingRow = null;
+
+    // テーブル内の行を検索し、該当する行を見つける
+    for (const row of table.rows) {
+        const cells = row.querySelectorAll('td');
+        if (cells.length > 0 && cells[0].textContent === today) {
+            existingRow = row;
+            break;
         }
-        if (row) {
-            const now = new Date()
-            console.log(now)
-			const year = now.getFullYear()
-	        const mon = fmtTime(`${now.getMonth() + 1}`)
-            console.log(mon)
-    	    const day = fmtTime(`${now.getDate()}`)
-            const hour = document.getElementById('wakeuphr').value
-            const min = document.getElementById('wakeupmin').value
-			const sec = document.getElementById('wakeupsec').value
-            const time = `${hour}:${min}`
-			const token = await getAccToken()
-			const res = await getInfo(token)
-			const json = await res.json()
-			postSleepData(token, json.res.user, `${year}-${mon}-${day} ${time}:${sec}`, mode)
-            row.cells[row.cells.length - 2].textContent = time;
+    }
+
+    if (sleeping === false) {
+        if (existingRow) {
+            // 既存の行を更新
+            existingRow.cells[1].textContent = time;
+            // APIにデータを送信
+            const token = await getAccToken();
+            const res = await getInfo(token);
+            const json = await res.json();
+            await postSleepData(token, json.res.user, fullDate, mode);
         } else {
-            console.error('oops')
+            // 新しい行を追加
+            table.insertAdjacentHTML('beforeend', 
+                `<tr>
+                    <td>${today}</td>
+                    <td>${time}</td>
+                    <td>記録なし</td>
+                    <td><input type="checkbox" id="breakfast" onclick="checkbf(this)"></td>
+                </tr>`
+            );
+			shouldRemove()
+            // APIにデータを送信
+            const token = await getAccToken();
+            const res = await getInfo(token);
+            if (!res.ok) {
+                console.error('response is not ok, returning...');
+                return;
+            }
+            const json = await res.json();
+            await postSleepData(token, json.res.user, fullDate, mode);
         }
     } else {
-        const elem = document.getElementById('slog')
-        const now = new Date()
-        console.log(now)
-        const year = now.getFullYear()
-        const mon = fmtTime(`${now.getMonth() + 1}`)
-        console.log(mon)
-        const day = fmtTime(`${now.getDate()}`)
-        const today = `${year}/${mon}/${day}`
-        const hour = document.getElementById('wakeuphr').value
-        const min = document.getElementById('wakeupmin').value
-		const sec = document.getElementById('wakeupsec').value
-        const time = `${hour}:${min}`
-        elem.insertAdjacentHTML(`beforeend`, `<tr><td>${today}</td><td>${time}</td><td>記録なし</td><td><input type="checkbox" id="breakfast" onclick="checkbf(tdis)"></td></tr>`)
-		const token = await getAccToken()
-		const res = await getInfo(token)
-		if (!res.ok) {
-			console.error('response is not ok, returing...')
-			return;
-		}
-		const json = await res.json()
-		postSleepData(token, json.res.user, `${year}-${mon}-${day} ${time}:${sec}`, mode)
-        shouldRemove()
-        //削除
-        // document.getElementById('slog').firstElementChild.children[1].remove()
+        // この部分は `sleeping` が `true` の場合の処理です。もし不要なら削除してください。
+        if (existingRow) {
+            // 既存の行を更新
+			console.log(existingRow.cells)
+            existingRow.cells[2].textContent = time;
+            // APIにデータを送信
+            const token = await getAccToken();
+            const res = await getInfo(token);
+            const json = await res.json();
+            await postSleepData(token, json.res.user, fullDate, mode);
+        } else {
+            // 新しい行を追加
+            table.insertAdjacentHTML('beforeend', 
+                `<tr>
+                    <td>${today}</td>
+                    <td>記録なし</td>
+                    <td>${time}</td>
+                    <td><input type="checkbox" id="breakfast" onclick="checkbf(this)"></td>
+                </tr>`
+            );
+			shouldRemove()
+            // APIにデータを送信
+            const token = await getAccToken();
+            const res = await getInfo(token);
+            if (!res.ok) {
+                console.error('response is not ok, returning...');
+                return;
+            }
+            const json = await res.json();
+            await postSleepData(token, json.res.user, fullDate, mode);
+        }
     }
 }
 
@@ -271,7 +296,7 @@ async function fetchSleepData() {
             ? wakeupdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) 
             : '記録なし';
         row.appendChild(wakeupTimeCell);
-		
+
         const sleepTimeCell = document.createElement('td');
         sleepTimeCell.textContent = sleepdate 
             ? sleepdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) 
