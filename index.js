@@ -113,6 +113,29 @@ async function wakeup(x) {
     wakeup_alr = false;
 }
 
+async function breakfast(x) {
+    // Get all <td> elements in the table
+    const tds = document.querySelectorAll('tr td');
+            
+    // Check if there are any <td> elements
+    if (tds.length > 0) {
+        // Get the last <td> element
+        const lastTd = tds[tds.length - 1];
+        
+        // Find the <input type="checkbox"> within the last <td>
+        const lastCheckbox = lastTd.querySelector('input[type="checkbox"]');
+        
+        // Check the checkbox if it exists
+        if (lastCheckbox) {
+            if (lastCheckbox.checked) {
+                lastCheckbox.checked = false;
+            } else {
+                lastCheckbox.checked = true;
+            }
+        }
+    }
+}
+
 async function addList(mode) {
     const now = new Date();
     const year = now.getFullYear();
