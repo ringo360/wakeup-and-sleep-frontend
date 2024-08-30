@@ -9,9 +9,15 @@ function switchButtonbyId(elem, bool) {
 
 function switchButtonbyClassName(elem, bool) {
 	if (bool) {
-		elem.classList.replace('btn', 'graybtn')
+		// elem.classList.replace('btn', 'graybtn')
+		elem.classList.remove('btn')
+		elem.classList.add('graybtn')
+		return;
 	} else {
-		elem.classList.replace('graybtn', 'btn')
+		// elem.classList.replace('graybtn', 'btn')
+		elem.classList.remove('graybtn')
+		elem.classList.add('btn')
+		return;
 	}
 }
 

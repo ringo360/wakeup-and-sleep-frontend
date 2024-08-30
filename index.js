@@ -114,8 +114,10 @@ async function wakeup(x) {
 }
 
 async function breakfast(x) {
+    console.log('fire.')
     // Get all <td> elements in the table
     const tds = document.querySelectorAll('tr td');
+    switchButtonbyClassName(x, true)
             
     // Check if there are any <td> elements
     if (tds.length > 0) {
@@ -129,11 +131,38 @@ async function breakfast(x) {
         if (lastCheckbox) {
             if (lastCheckbox.checked) {
                 lastCheckbox.checked = false;
+                postBreakfastBool(false)
+                switchButtonbyClassName(x, false)
+                
+
             } else {
                 lastCheckbox.checked = true;
+                postBreakfastBool(true)
+                switchButtonbyClassName(x, false)
             }
         }
     }
+}
+
+
+async function postBreakfastBool(bool) {
+    const token = await getAccToken();
+    const res = await getInfo(token);
+    if (!res.ok) {
+        console.error('response is not ok, returning...');
+        return;
+    }
+    const json = await res.json();
+	let formBody = []
+	const post_token = encodeURIComponent(token)
+	const user = encodeURIComponent(username)
+	formBody.push('token=' + post_token)
+	formBody.push('username=' + user)
+	formBody.push('bool=' + bool)
+	formBody = await formBody.join("&")
+	const result = await postAPI(formBody, `/v1/breakfast`)
+	if (result.ok) return true;
+	else return false;
 }
 
 async function addList(mode) {
