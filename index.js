@@ -93,7 +93,9 @@ async function sleep(x) {
     await addList('sleep')
     x.textContent = '🌙'
     // x.textContent = '🌞'
+    switchButtonbyClassName(x, true)
     await wait(2000)
+    switchButtonbyClassName(x, false)
     // x.value ='起床'
     x.textContent = '就寝'
     sleep_alr = false;
@@ -108,7 +110,9 @@ async function wakeup(x) {
     await addList('wakeup')
     // x.textContent = '🌙'
     x.textContent = '🌞'
+    switchButtonbyClassName(x, true)
     await wait(2000)
+    switchButtonbyClassName(x, false)
     x.textContent = '起床'
     wakeup_alr = false;
 }
@@ -131,13 +135,15 @@ async function breakfast(x) {
         if (lastCheckbox) {
             if (lastCheckbox.checked) {
                 lastCheckbox.checked = false;
-                postBreakfastBool(false)
+                await postBreakfastBool(false)
+                await wait(500)
                 switchButtonbyClassName(x, false)
                 
 
             } else {
                 lastCheckbox.checked = true;
-                postBreakfastBool(true)
+                await postBreakfastBool(true)
+                await wait(500)
                 switchButtonbyClassName(x, false)
             }
         }
@@ -155,7 +161,7 @@ async function postBreakfastBool(bool) {
     const json = await res.json();
 	let formBody = []
 	const post_token = encodeURIComponent(token)
-	const user = encodeURIComponent(username)
+	const user = encodeURIComponent(json.res.user)
 	formBody.push('token=' + post_token)
 	formBody.push('username=' + user)
 	formBody.push('bool=' + bool)
