@@ -337,7 +337,12 @@ async function fetchSleepData() {
 
     // グループ化と合計計算を行う
     const groupedData = validData.reduce((acc, record) => {
-        const dateKey = new Date(record.sleepdate || record.wakeupdate).toISOString().split('T')[0];
+        let dateKey;
+        if (record.sleepdate && isValidDate(record.sleepdate)) {
+            dateKey = new Date(record.sleepdate).toISOString().split('T')[0];
+        } else if (record.wakeupdate && isValidDate(record.wakeupdate)) {
+            dateKey = new Date(record.wakeupdate).toISOString().split('T')[0];
+        }
         
         if (!acc[dateKey]) {
             acc[dateKey] = {
@@ -357,14 +362,18 @@ async function fetchSleepData() {
         return acc;
     }, {});
 
+    console.log('Grouped data:', groupedData);
+
     // 合計データを計算
-    const aggregatedData = Object.values(groupedData).map(item => ({
-        date: item.date,
+    const aggregatedData = Object.entries(groupedData).map(([dateKey, item]) => ({
+        date: dateKey,
         sleepTime: item.sleepEvents.length > 0 ? item.sleepEvents.sort((a, b) => a - b)[0] : null,
         wakeTime: item.wakeEvents.length > 0 ? item.wakeEvents.sort((a, b) => a - b)[0] : null,
         sleepCount: item.sleepEvents.length,
         wakeCount: item.wakeEvents.length
     }));
+
+    console.log('Aggregated data:', aggregatedData);
 
     // テーブル更新
     const table = document.getElementById('slog');
