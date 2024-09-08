@@ -316,21 +316,33 @@ async function fetchSleepData() {
 
         const dateKey = sleepDate 
             ? sleepDate.toISOString().split('T')[0] 
-            : wakeupDate.toISOString().split('T')[0];
+            : (wakeupDate ? wakeupDate.toISOString().split('T')[0] : null);
+
+        if (!dateKey) {
+            console.log('dateKey is null for record:', record);
+            return acc;  // dateKeyがnullの場合はスキップ
+        }
+
+        console.log(`Computed dateKey: ${dateKey}`);
 
         if (!acc[dateKey]) {
             acc[dateKey] = { sleepdate: record.sleepdate, wakeupdate: record.wakeupdate };
+            console.log(`Added new entry for ${dateKey}`);
         } else {
             if (sleepDate && (!acc[dateKey].sleepdate || sleepDate > new Date(acc[dateKey].sleepdate))) {
                 acc[dateKey].sleepdate = record.sleepdate;
+                console.log(`Updated sleepdate for ${dateKey}`);
             }
             if (wakeupDate && (!acc[dateKey].wakeupdate || wakeupDate > new Date(acc[dateKey].wakeupdate))) {
                 acc[dateKey].wakeupdate = record.wakeupdate;
+                console.log(`Updated wakeupdate for ${dateKey}`);
             }
         }
 
         return acc;
     }, {});
+
+    console.log('Consolidated latest records:', latestRecords);
 
     // 結果をテーブルに追加
     const table = document.getElementById('slog');
@@ -349,7 +361,7 @@ async function fetchSleepData() {
         dateCell.textContent = wakeupdate ? formatDate(wakeupdate) : formatDate(sleepdate);
         row.appendChild(dateCell);
 
-		const wakeupTimeCell = document.createElement('td');
+        const wakeupTimeCell = document.createElement('td');
         wakeupTimeCell.textContent = wakeupdate 
             ? wakeupdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) 
             : '記録なし';
@@ -361,7 +373,6 @@ async function fetchSleepData() {
             : '記録なし';
         row.appendChild(sleepTimeCell);
 
-
         const checkCell = document.createElement('td');
         const checkBox = document.createElement('input');
         checkBox.type = 'checkbox';
@@ -370,9 +381,9 @@ async function fetchSleepData() {
         row.appendChild(checkCell);
 
         table.appendChild(row);
+        console.log(`Added row for dateKey ${dateCell.textContent}`);
     });
 }
-
 
 //TODO: うまくつかう
 function calculateTimeDifference(sleepDate, wakeUpdate) {
