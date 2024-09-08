@@ -247,7 +247,7 @@ async function addList(mode) {
                 </tr>`
             );
 			shouldRemove()
-            // APIにデー�����を送信
+            // APIにデー�������を送信
             const token = await getAccToken();
             const res = await getInfo(token);
             if (!res.ok) {
@@ -328,7 +328,7 @@ async function fetchSleepData() {
     return !isNaN(date.getTime()) && date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
   }
 
-  // 日付が有効なものだけをフィ��タ��ング
+  // 日付が有効なものだけを��ィ��タ��ング
   const validData = data.filter(item => {
     return isValidDate(item.sleepdate) || isValidDate(item.wakeupdate);
   });
@@ -404,15 +404,28 @@ async function fetchSleepData() {
     checkBox.type = 'checkbox';
     checkBox.id = `breakfast-${item.date.replace(/\D/g, '')}`;
 
-	console.log(data)
-	console.log(data[item.date])
-    // チェックボックスの状態を設定
-    if (item.date in data && data[item.date] !== undefined && data[item.date].breakfast !== null) {
-      const record = data[item.date];
-	  console.log(record)
-      if (typeof record.breakfast === 'boolean' && record.breakfast) {
-        checkBox.checked = true;
+	// 日付をキーとして使用するためのマップを作成
+    const breakfastMap = {};
+    data.forEach(item => {
+		// console.log(item)
+      const dateKey = item.sleepdate || item.wakeupdate;
+      if (item.breakfast !== null && item.breakfast === "true") {
+        breakfastMap[dateKey] = true;
       }
+    });
+	console.log('Checking breakfast for:', item.date);
+	console.log('Breakfast map:', breakfastMap);
+
+	// テスト用
+	const testDates = ['2024-09-08 12:37:12', '2024-09-08'];
+	testDates.forEach(testDate => {
+	  console.log(`Test ${testDate}:`, breakfastMap[testDate]);
+	});
+    // チェックボックスの状態を設定
+	if (item.date in breakfastMap) console.log('Exists.')
+    if (item.date in breakfastMap && breakfastMap[item.date]) {
+		console.log('HIT')
+      checkBox.checked = true;
     }
 
     checkCell.appendChild(checkBox);
