@@ -309,82 +309,68 @@ async function fetchSleepData() {
     const res = await getSleepRes(token, json.res.user);
     const data = await res.json();
 
-    // 日付ごとに一番遅い時間を抽出し、合成する
-    const latestRecords = Object.values(data).reduce((acc, record) => {
-        const sleepDate = record.sleepdate ? new Date(record.sleepdate) : null;
-        const wakeupDate = record.wakeupdate ? new Date(record.wakeupdate) : null;
-
-        const dateKey = sleepDate 
-            ? sleepDate.toISOString().split('T')[0] 
-            : (wakeupDate ? wakeupDate.toISOString().split('T')[0] : null);
-
-        if (!dateKey) {
-            console.log('dateKey is null for record:', record);
-            return acc;  // dateKeyがnullの場合はスキップ
+    // Group data by date and aggregate
+    const groupedData = data.reduce((acc, record) => {
+        const date = new Date(record.sleepdate || record.wakeupdate).toISOString().split('T')[0];
+        if (!acc[date]) {
+            acc[date] = {
+                sleepEvents: [],
+                wakeEvents: []
+            };
         }
-
-        console.log(`Computed dateKey: ${dateKey}`, record);
-
-        if (!acc[dateKey]) {
-            acc[dateKey] = { sleepdate: record.sleepdate, wakeupdate: record.wakeupdate };
-            console.log(`Added new entry for ${dateKey}:`, acc[dateKey]);
+        if (record.sleepdate) {
+            acc[date].sleepEvents.push(new Date(record.sleepdate));
         } else {
-            if (sleepDate && (!acc[dateKey].sleepdate || sleepDate > new Date(acc[dateKey].sleepdate))) {
-                acc[dateKey].sleepdate = record.sleepdate;
-                console.log(`Updated sleepdate for ${dateKey}:`, acc[dateKey]);
-            }
-            if (wakeupDate && (!acc[dateKey].wakeupdate || wakeupDate > new Date(acc[dateKey].wakeupdate))) {
-                acc[dateKey].wakeupdate = record.wakeupdate;
-                console.log(`Updated wakeupdate for ${dateKey}:`, acc[dateKey]);
-            }
+            acc[date].wakeEvents.push(new Date(record.wakeupdate));
         }
-
         return acc;
     }, {});
 
-    console.log('Consolidated latest records:', latestRecords);
+    // Calculate aggregated data
+    const aggregatedData = Object.values(groupedData).map(item => ({
+        date: item.date,
+        sleepDuration: item.sleepEvents.reduce((total, event) => total + (event - item.sleepEvents[0]), 0),
+        wakeDuration: item.wakeEvents.reduce((total, event) => total + (item.wakeEvents[item.wakeEvents.length - 1] - event), 0),
+        sleepCount: item.sleepEvents.length,
+        wakeCount: item.wakeEvents.length
+    }));
 
-    // 結果をテーブルに追加
+    // Update the table with aggregated data
     const table = document.getElementById('slog');
-
-    // 既存の行をすべて削除
+    
+    // Clear existing rows
     while (table.rows.length > 1) {
         table.deleteRow(1);
     }
 
-    Object.entries(latestRecords).forEach(([dateKey, record]) => {
-        const sleepdate = record.sleepdate ? new Date(record.sleepdate) : null;
-        const wakeupdate = record.wakeupdate ? new Date(record.wakeupdate) : null;
-
+    aggregatedData.forEach(item => {
         const row = document.createElement('tr');
-
+        
         const dateCell = document.createElement('td');
-        dateCell.textContent = wakeupdate ? formatDate(wakeupdate) : formatDate(sleepdate);
+        dateCell.textContent = formatDate(new Date(item.date));
         row.appendChild(dateCell);
 
-        const wakeupTimeCell = document.createElement('td');
-        wakeupTimeCell.textContent = wakeupdate 
-            ? wakeupdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) 
-            : '記録なし';
-        row.appendChild(wakeupTimeCell);
+        const sleepDurationCell = document.createElement('td');
+        sleepDurationCell.textContent = formatDuration(item.sleepDuration);
+        row.appendChild(sleepDurationCell);
 
-        const sleepTimeCell = document.createElement('td');
-        sleepTimeCell.textContent = sleepdate 
-            ? sleepdate.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' }) 
-            : '記録なし';
-        row.appendChild(sleepTimeCell);
+        const wakeDurationCell = document.createElement('td');
+        wakeDurationCell.textContent = formatDuration(item.wakeDuration);
+        row.appendChild(wakeDurationCell);
 
-        const checkCell = document.createElement('td');
-        const checkBox = document.createElement('input');
-        checkBox.type = 'checkbox';
-        checkBox.onclick = checkbf(this);
-        checkCell.appendChild(checkBox);
-        row.appendChild(checkCell);
+        const sleepCountCell = document.createElement('td');
+        sleepCountCell.textContent = item.sleepCount;
+        row.appendChild(sleepCountCell);
+
+        const wakeCountCell = document.createElement('td');
+        wakeCountCell.textContent = item.wakeCount;
+        row.appendChild(wakeCountCell);
 
         table.appendChild(row);
-        console.log(`Added row for dateKey ${dateCell.textContent}`, record);
     });
-}
+
+    console.log('Updated table with aggregated data');
+};
 
 //TODO: うまくつかう
 function calculateTimeDifference(sleepDate, wakeUpdate) {
