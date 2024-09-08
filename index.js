@@ -351,14 +351,14 @@ async function fetchSleepData() {
         table.deleteRow(1);
     }
 
-    Object.values(latestRecords).forEach(record => {
+    Object.entries(latestRecords).forEach(([dateKey, record]) => {
         const sleepdate = record.sleepdate ? new Date(record.sleepdate) : null;
         const wakeupdate = record.wakeupdate ? new Date(record.wakeupdate) : null;
 
         const row = document.createElement('tr');
 
         const dateCell = document.createElement('td');
-        dateCell.textContent = wakeupdate ? formatDate(wakeupdate) : formatDate(sleepdate);
+        dateCell.textContent = formatDate(wakeupdate || sleepdate);
         row.appendChild(dateCell);
 
         const wakeupTimeCell = document.createElement('td');
