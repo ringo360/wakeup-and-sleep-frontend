@@ -336,31 +336,40 @@ async function fetchSleepData() {
     console.log('Valid data:', validData);
 
     // グループ化と合計計算を行う
-    const groupedData = validData.reduce((acc, record) => {
+    const groupedData = {};
+    validData.forEach(record => {
         let dateKey;
+		console.log(record)
         if (record.sleepdate && isValidDate(record.sleepdate)) {
-            dateKey = new Date(record.sleepdate).toISOString().split('T')[0];
+            const nowtime = new Date(record.sleepdate)
+			const jstDate = getJSTISO(nowtime)
+			dateKey = jstDate.split('T')[0];
+            // dateKey = new Date(record.sleepdate).toISOString().split('T')[0];
         } else if (record.wakeupdate && isValidDate(record.wakeupdate)) {
-            dateKey = new Date(record.wakeupdate).toISOString().split('T')[0];
+            const nowtime = new Date(record.wakeupdate)
+			const jstDate = getJSTISO(nowtime)
+			dateKey = jstDate.split('T')[0];
+            // dateKey = new Date(record.wakeupdate).toISOString().split('T')[0];
+        } else {
+            return;
         }
+		console.log(dateKey)
         
-        if (!acc[dateKey]) {
-            acc[dateKey] = {
+        if (!groupedData[dateKey]) {
+            groupedData[dateKey] = {
                 sleepEvents: [],
                 wakeEvents: []
             };
         }
         
         if (record.sleepdate && isValidDate(record.sleepdate)) {
-            acc[dateKey].sleepEvents.push(new Date(record.sleepdate));
+            groupedData[dateKey].sleepEvents.push(new Date(record.sleepdate));
         }
         
         if (record.wakeupdate && isValidDate(record.wakeupdate)) {
-            acc[dateKey].wakeEvents.push(new Date(record.wakeupdate));
+            groupedData[dateKey].wakeEvents.push(new Date(record.wakeupdate));
         }
-        
-        return acc;
-    }, {});
+    });
 
     console.log('Grouped data:', groupedData);
 
@@ -390,13 +399,13 @@ async function fetchSleepData() {
         dateCell.textContent = formatDate(new Date(item.date));
         row.appendChild(dateCell);
 
-        const sleepTimeCell = document.createElement('td');
-        sleepTimeCell.textContent = item.sleepTime ? formatTime(item.sleepTime) : '記録なし';
-        row.appendChild(sleepTimeCell);
-
         const wakeTimeCell = document.createElement('td');
         wakeTimeCell.textContent = item.wakeTime ? formatTime(item.wakeTime) : '記録なし';
         row.appendChild(wakeTimeCell);
+
+        const sleepTimeCell = document.createElement('td');
+        sleepTimeCell.textContent = item.sleepTime ? formatTime(item.sleepTime) : '記録なし';
+        row.appendChild(sleepTimeCell);
 
         const checkCell = document.createElement('td');
         const checkBox = document.createElement('input');
@@ -425,4 +434,19 @@ function formatDuration(milliseconds) {
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     return `${hours}時間 ${minutes % 60}分`;
+}
+
+function getJSTISO(nowtime) {
+	// UTCとローカルタイムゾーンとの差を取得し、分からミリ秒に変換
+	const diff = nowtime.getTimezoneOffset() * 60 * 1000    // -540 * 60 * 1000 = -32400000
+
+	// toISOString()で、UTC時間になってしまう（-9時間）ので、日本時間に9時間足しておく
+	const plusLocal = new Date(nowtime - diff)    // Thu Apr 23 2020 07:39:03 GMT+0900 (Japan Standard Time)
+
+	// ISO形式に変換（UTCタイムゾーンで日本時間、というよくない状態）
+	let iso = plusLocal.toISOString()   // "2020-04-22T22:39:03.397Z"
+
+	// UTCタイムゾーン部分は消して、日本のタイムゾーンの表記を足す
+	iso = iso.slice(0, 19) + '+09:00'    // "2020-04-22T22:39:03+09:00"
+	return iso;
 }
