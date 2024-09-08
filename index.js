@@ -323,19 +323,19 @@ async function fetchSleepData() {
             return acc;  // dateKeyがnullの場合はスキップ
         }
 
-        console.log(`Computed dateKey: ${dateKey}`);
+        console.log(`Computed dateKey: ${dateKey}`, record);
 
         if (!acc[dateKey]) {
             acc[dateKey] = { sleepdate: record.sleepdate, wakeupdate: record.wakeupdate };
-            console.log(`Added new entry for ${dateKey}`);
+            console.log(`Added new entry for ${dateKey}:`, acc[dateKey]);
         } else {
             if (sleepDate && (!acc[dateKey].sleepdate || sleepDate > new Date(acc[dateKey].sleepdate))) {
                 acc[dateKey].sleepdate = record.sleepdate;
-                console.log(`Updated sleepdate for ${dateKey}`);
+                console.log(`Updated sleepdate for ${dateKey}:`, acc[dateKey]);
             }
             if (wakeupDate && (!acc[dateKey].wakeupdate || wakeupDate > new Date(acc[dateKey].wakeupdate))) {
                 acc[dateKey].wakeupdate = record.wakeupdate;
-                console.log(`Updated wakeupdate for ${dateKey}`);
+                console.log(`Updated wakeupdate for ${dateKey}:`, acc[dateKey]);
             }
         }
 
@@ -347,6 +347,7 @@ async function fetchSleepData() {
     // 結果をテーブルに追加
     const table = document.getElementById('slog');
 
+    // 既存の行をすべて削除
     while (table.rows.length > 1) {
         table.deleteRow(1);
     }
@@ -358,7 +359,7 @@ async function fetchSleepData() {
         const row = document.createElement('tr');
 
         const dateCell = document.createElement('td');
-        dateCell.textContent = formatDate(wakeupdate || sleepdate);
+        dateCell.textContent = wakeupdate ? formatDate(wakeupdate) : formatDate(sleepdate);
         row.appendChild(dateCell);
 
         const wakeupTimeCell = document.createElement('td');
@@ -381,7 +382,7 @@ async function fetchSleepData() {
         row.appendChild(checkCell);
 
         table.appendChild(row);
-        console.log(`Added row for dateKey ${dateCell.textContent}`);
+        console.log(`Added row for dateKey ${dateCell.textContent}`, record);
     });
 }
 
