@@ -247,7 +247,7 @@ async function addList(mode) {
                 </tr>`
             );
 			shouldRemove()
-            // APIにデータを送信
+            // APIにデー�����を送信
             const token = await getAccToken();
             const res = await getInfo(token);
             if (!res.ok) {
@@ -296,132 +296,136 @@ const fmtTime = ( val, text = "0", before = true ) => {
 }
 
 async function fetchSleepData() {
-	console.log('Fetching sleep data');
-	const token = await getAccToken();
-	const info = await getInfo(token);
-  
-	if (!info.ok) {
-	  console.error('response is not ok, returning...');
-	  return;
-	}
-  
-	const json = await info.json();
-	const res = await getSleepRes(token, json.res.user);
-	let data = await res.json();
-  
-	// データが配列でない場合は、オブジェクトの値を配列にする
-	if (!Array.isArray(data)) {
-	  data = Object.values(data);
-	}
-  
-	console.log('Raw data:', data);
-  
-	// 日付が有効かどうかチェックする関数
-	function isValidDate(dateString) {
-	  if (!dateString) return false;
-  
-	  const dateParts = dateString.split(' ');
-	  const [year, month, day] = dateParts[0].split('-').map(Number);
-	  const [hour, minute, second] = dateParts[1].split(':').map(Number);
-  
-	  const date = new Date(year, month - 1, day, hour, minute, second);
-	  return !isNaN(date.getTime()) && date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
-	}
-  
-	// 日付が有効なものだけをフィルタリング
-	const validData = data.filter(item => {
-	  return isValidDate(item.sleepdate) || isValidDate(item.wakeupdate);
-	});
-  
-	console.log('Valid data:', validData);
-  
-	// グループ化と合計計算を行う
-	const groupedData = {};
-	validData.forEach(record => {
-	  let dateKey;
-	  if (record.sleepdate && isValidDate(record.sleepdate)) {
-		const nowtime = new Date(record.sleepdate)
-		const jstDate = getJSTISO(nowtime)
-		dateKey = jstDate.split('T')[0];
-	  } else if (record.wakeupdate && isValidDate(record.wakeupdate)) {
-		const nowtime = new Date(record.wakeupdate)
-		const jstDate = getJSTISO(nowtime)
-		dateKey = jstDate.split('T')[0];
-	  } else {
-		return;
-	  }
-  
-	  if (!groupedData[dateKey]) {
-		groupedData[dateKey] = {
-		  sleepEvents: [],
-		  wakeEvents: []
-		};
-	  }
-  
-	  if (record.sleepdate && isValidDate(record.sleepdate)) {
-		groupedData[dateKey].sleepEvents.push(new Date(record.sleepdate));
-	  }
-  
-	  if (record.wakeupdate && isValidDate(record.wakeupdate)) {
-		groupedData[dateKey].wakeEvents.push(new Date(record.wakeupdate));
-	  }
-	});
-  
-	console.log('Grouped data:', groupedData);
-  
-	// 合計データを計算
-	const aggregatedData = Object.entries(groupedData).map(([dateKey, item]) => ({
-	  date: dateKey,
-	  sleepTime: item.sleepEvents.length > 0 ? item.sleepEvents.sort((a, b) => a - b)[0] : null,
-	  wakeTime: item.wakeEvents.length > 0 ? item.wakeEvents.sort((a, b) => a - b)[0] : null,
-	  sleepCount: item.sleepEvents.length,
-	  wakeCount: item.wakeEvents.length
-	}));
-  
-	console.log('Aggregated data:', aggregatedData);
-  
-	// テーブル更新
-	const table = document.getElementById('slog');
-  
-	// 既存の行を削除
-	while (table.rows.length > 1) {
-	  table.deleteRow(1);
-	}
-  
-	aggregatedData.forEach(item => {
-	  const row = document.createElement('tr');
-	  const dateCell = document.createElement('td');
-	  dateCell.textContent = formatDate(new Date(item.date));
-  
-	  const wakeTimeCell = document.createElement('td');
-	  wakeTimeCell.textContent = item.wakeTime ? formatTime(item.wakeTime) : '記録なし';
-  
-	  const sleepTimeCell = document.createElement('td');
-	  sleepTimeCell.textContent = item.sleepTime ? formatTime(item.sleepTime) : '記録なし';
-  
-	  const checkCell = document.createElement('td');
-	  const checkBox = document.createElement('input');
-	  checkBox.type = 'checkbox';
-	  checkBox.id = `breakfast-${item.date.replace(/\D/g, '')}`;
-  
-	  // チェックボックスの状態を設定
-	  if (item.date in data) {
-		const record = data[item.date];
-		if (record.breakfast === 'true') {
-		  checkBox.checked = true;
-		}
-	  }
-  
-	  checkCell.appendChild(checkBox);
-	  row.appendChild(dateCell);
-	  row.appendChild(wakeTimeCell);
-	  row.appendChild(sleepTimeCell);
-	  row.appendChild(checkCell);
-	  table.appendChild(row);
-	});
-  
-	console.log('テーブルの更新が完了しました');
+  console.log('Fetching sleep data');
+  const token = await getAccToken();
+  const info = await getInfo(token);
+
+  if (!info.ok) {
+    console.error('response is not ok, returning...');
+    return;
   }
+
+  const json = await info.json();
+  const res = await getSleepRes(token, json.res.user);
+  let data = await res.json();
+
+  // データが配列でない場合は、オブジェクトの値を配列にする
+  if (!Array.isArray(data)) {
+    data = Object.values(data);
+  }
+
+  console.log('Raw data:', data);
+
+  // 日付が有効かどうかチェックする関数
+  function isValidDate(dateString) {
+    if (!dateString) return false;
+
+    const dateParts = dateString.split(' ');
+    const [year, month, day] = dateParts[0].split('-').map(Number);
+    const [hour, minute, second] = dateParts[1].split(':').map(Number);
+
+    const date = new Date(year, month - 1, day, hour, minute, second);
+    return !isNaN(date.getTime()) && date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+  }
+
+  // 日付が有効なものだけをフィ��タ��ング
+  const validData = data.filter(item => {
+    return isValidDate(item.sleepdate) || isValidDate(item.wakeupdate);
+  });
+
+  console.log('Valid data:', validData);
+
+  // グループ化と合計計算を行う
+  const groupedData = {};
+  validData.forEach(record => {
+    let dateKey;
+    if (record.sleepdate && isValidDate(record.sleepdate)) {
+      const nowtime = new Date(record.sleepdate)
+      const jstDate = getJSTISO(nowtime)
+      dateKey = jstDate.split('T')[0];
+    } else if (record.wakeupdate && isValidDate(record.wakeupdate)) {
+      const nowtime = new Date(record.wakeupdate)
+      const jstDate = getJSTISO(nowtime)
+      dateKey = jstDate.split('T')[0];
+    } else {
+      return;
+    }
+
+    if (!groupedData[dateKey]) {
+      groupedData[dateKey] = {
+        sleepEvents: [],
+        wakeEvents: []
+      };
+    }
+
+    if (record.sleepdate && isValidDate(record.sleepdate)) {
+      groupedData[dateKey].sleepEvents.push(new Date(record.sleepdate));
+    }
+
+    if (record.wakeupdate && isValidDate(record.wakeupdate)) {
+      groupedData[dateKey].wakeEvents.push(new Date(record.wakeupdate));
+    }
+  });
+
+  console.log('Grouped data:', groupedData);
+
+  // 合計データを計算
+  const aggregatedData = Object.entries(groupedData).map(([dateKey, item]) => ({
+    date: dateKey,
+    sleepTime: item.sleepEvents.length > 0 ? item.sleepEvents.sort((a, b) => a - b)[0] : null,
+    wakeTime: item.wakeEvents.length > 0 ? item.wakeEvents.sort((a, b) => a - b)[0] : null,
+    sleepCount: item.sleepEvents.length,
+    wakeCount: item.wakeEvents.length
+  }));
+
+  console.log('Aggregated data:', aggregatedData);
+
+  // テーブル更新
+  const table = document.getElementById('slog');
+
+  // 既存の行を削除
+  while (table.rows.length > 1) {
+    table.deleteRow(1);
+  }
+
+  aggregatedData.forEach(item => {
+    const row = document.createElement('tr');
+    const dateCell = document.createElement('td');
+    dateCell.textContent = formatDate(new Date(item.date));
+
+    const wakeTimeCell = document.createElement('td');
+    wakeTimeCell.textContent = item.wakeTime ? formatTime(item.wakeTime) : '記録なし';
+
+    const sleepTimeCell = document.createElement('td');
+    sleepTimeCell.textContent = item.sleepTime ? formatTime(item.sleepTime) : '記録なし';
+
+    const checkCell = document.createElement('td');
+    const checkBox = document.createElement('input');
+    checkBox.type = 'checkbox';
+    checkBox.id = `breakfast-${item.date.replace(/\D/g, '')}`;
+
+	console.log(data)
+	console.log(data[item.date])
+    // チェックボックスの状態を設定
+    if (item.date in data && data[item.date] !== undefined && data[item.date].breakfast !== null) {
+      const record = data[item.date];
+	  console.log(record)
+      if (typeof record.breakfast === 'boolean' && record.breakfast) {
+        checkBox.checked = true;
+      }
+    }
+
+    checkCell.appendChild(checkBox);
+    row.appendChild(dateCell);
+    row.appendChild(wakeTimeCell);
+    row.appendChild(sleepTimeCell);
+    row.appendChild(checkCell);
+    table.appendChild(row);
+  });
+
+  console.log('テーブルの更新が完了しました');
+}
+
 function formatDate(date) {
     return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
 }
@@ -441,7 +445,7 @@ function getJSTISO(nowtime) {
 	// UTCとローカルタイムゾーンとの差を取得し、分からミリ秒に変換
 	const diff = nowtime.getTimezoneOffset() * 60 * 1000    // -540 * 60 * 1000 = -32400000
 
-	// toISOString()で、UTC時間になってしまう（-9時間）ので、日本時間に9時間足しておく
+	// toISOString()で、UTC時間になってしまう（-9時間）ので��日本時間に9時間足しておく
 	const plusLocal = new Date(nowtime - diff)    // Thu Apr 23 2020 07:39:03 GMT+0900 (Japan Standard Time)
 
 	// ISO形式に変換（UTCタイムゾーンで日本時間、というよくない状態）
