@@ -307,38 +307,69 @@ async function fetchSleepData() {
 
     const json = await info.json();
     const res = await getSleepRes(token, json.res.user);
-    const data = await res.json();
+    let data = await res.json();
 
-    // Group data by date and aggregate
-    const groupedData = data.reduce((acc, record) => {
-        const date = new Date(record.sleepdate || record.wakeupdate).toISOString().split('T')[0];
-        if (!acc[date]) {
-            acc[date] = {
+    // データが配列でない場合は、オブジェクトの値を配列にする
+    if (!Array.isArray(data)) {
+        data = Object.values(data);
+    }
+
+    console.log('Raw data:', data);
+
+    // 日付が有効かどうかチェックする関数
+    function isValidDate(dateString) {
+        if (!dateString) return false;
+        
+        const dateParts = dateString.split(' ');
+        const [year, month, day] = dateParts[0].split('-').map(Number);
+        const [hour, minute, second] = dateParts[1].split(':').map(Number);
+
+        const date = new Date(year, month - 1, day, hour, minute, second);
+        return !isNaN(date.getTime()) && date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+    }
+
+    // 日付が有効なものだけをフィルタリング
+    const validData = data.filter(item => {
+        return isValidDate(item.sleepdate) || isValidDate(item.wakeupdate);
+    });
+
+    console.log('Valid data:', validData);
+
+    // グループ化と合計計算を行う
+    const groupedData = validData.reduce((acc, record) => {
+        const dateKey = new Date(record.sleepdate || record.wakeupdate).toISOString().split('T')[0];
+        
+        if (!acc[dateKey]) {
+            acc[dateKey] = {
                 sleepEvents: [],
                 wakeEvents: []
             };
         }
-        if (record.sleepdate) {
-            acc[date].sleepEvents.push(new Date(record.sleepdate));
-        } else {
-            acc[date].wakeEvents.push(new Date(record.wakeupdate));
+        
+        if (record.sleepdate && isValidDate(record.sleepdate)) {
+            acc[dateKey].sleepEvents.push(new Date(record.sleepdate));
         }
+        
+        if (record.wakeupdate && isValidDate(record.wakeupdate)) {
+            acc[dateKey].wakeEvents.push(new Date(record.wakeupdate));
+        }
+        
         return acc;
     }, {});
 
-    // Calculate aggregated data
+    // 合計データを計算
     const aggregatedData = Object.values(groupedData).map(item => ({
         date: item.date,
-        sleepDuration: item.sleepEvents.reduce((total, event) => total + (event - item.sleepEvents[0]), 0),
-        wakeDuration: item.wakeEvents.reduce((total, event) => total + (item.wakeEvents[item.wakeEvents.length - 1] - event), 0),
+        sleepTime: item.sleepEvents.length > 0 ? item.sleepEvents.sort((a, b) => a - b)[0] : null,
+        wakeTime: item.wakeEvents.length > 0 ? item.wakeEvents.sort((a, b) => a - b)[0] : null,
         sleepCount: item.sleepEvents.length,
         wakeCount: item.wakeEvents.length
     }));
 
-    // Update the table with aggregated data
+    // テーブル更新
     const table = document.getElementById('slog');
     
-    // Clear existing rows
+    // 既存の行を削除
     while (table.rows.length > 1) {
         table.deleteRow(1);
     }
@@ -350,51 +381,39 @@ async function fetchSleepData() {
         dateCell.textContent = formatDate(new Date(item.date));
         row.appendChild(dateCell);
 
-        const sleepDurationCell = document.createElement('td');
-        sleepDurationCell.textContent = formatDuration(item.sleepDuration);
-        row.appendChild(sleepDurationCell);
+        const sleepTimeCell = document.createElement('td');
+        sleepTimeCell.textContent = item.sleepTime ? formatTime(item.sleepTime) : '記録なし';
+        row.appendChild(sleepTimeCell);
 
-        const wakeDurationCell = document.createElement('td');
-        wakeDurationCell.textContent = formatDuration(item.wakeDuration);
-        row.appendChild(wakeDurationCell);
+        const wakeTimeCell = document.createElement('td');
+        wakeTimeCell.textContent = item.wakeTime ? formatTime(item.wakeTime) : '記録なし';
+        row.appendChild(wakeTimeCell);
 
-        const sleepCountCell = document.createElement('td');
-        sleepCountCell.textContent = item.sleepCount;
-        row.appendChild(sleepCountCell);
-
-        const wakeCountCell = document.createElement('td');
-        wakeCountCell.textContent = item.wakeCount;
-        row.appendChild(wakeCountCell);
+        const checkCell = document.createElement('td');
+        const checkBox = document.createElement('input');
+        checkBox.type = 'checkbox';
+        checkBox.id = `breakfast-${item.date.replace(/\D/g, '')}`;
+        checkBox.onclick = `checkbf(document.getElementById('${checkBox.id}'))`;
+        checkCell.appendChild(checkBox);
+        row.appendChild(checkCell);
 
         table.appendChild(row);
     });
 
-    console.log('Updated table with aggregated data');
-};
-
-//TODO: うまくつかう
-function calculateTimeDifference(sleepDate, wakeUpdate) {
-    const sleepDateTime = new Date(sleepDate);
-    const wakeUpdateDateTime = new Date(wakeUpdate);
-  
-    const timeDifference = wakeUpdateDateTime.getTime() - sleepDateTime.getTime();
-  
-    const seconds = Math.floor(timeDifference / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-  
-    if (hours > 0) {
-      return `${hours}時間`;
-    } else if (minutes > 0) {
-      return `${minutes}分`;
-    } else {
-      return `${seconds}秒`;
-    }
+    console.log('テーブルの更新が完了しました');
 }
 
 function formatDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}/${month}/${day}`;
+    return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
+}
+
+function formatTime(date) {
+    return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+}
+
+function formatDuration(milliseconds) {
+    const seconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    return `${hours}時間 ${minutes % 60}分`;
 }
