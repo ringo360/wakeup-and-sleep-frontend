@@ -408,6 +408,7 @@ async function fetchSleepData() {
     const checkBox = document.createElement('input');
     checkBox.type = 'checkbox';
     checkBox.id = `breakfast-${item.date.replace(/\D/g, '')}`;
+    checkBox.disabled = 'disabled'
 
     if (item.date in groupedData && groupedData[item.date].breakfast) {
       checkBox.checked = true;
