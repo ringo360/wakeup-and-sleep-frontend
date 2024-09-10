@@ -141,6 +141,7 @@ async function breakfast(x) {
                 
 
             } else {
+                launchFireworks(3000)
                 lastCheckbox.checked = true;
                 await postBreakfastBool(true)
                 await wait(500)
