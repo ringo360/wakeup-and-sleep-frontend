@@ -21,10 +21,18 @@ function switchButtonbyClassName(elem, bool) {
 	}
 }
 
+async function devfunc() {
+	//
+}
+
 async function launchFireworks(time) {
+	document.documentElement.style.setProperty('--backgroundc', '#454545');
+	document.documentElement.style.setProperty('--textc', 'white');
     fireworks.start()
 	await wait(time)
 	fireworks.waitStop(true)
+	document.documentElement.style.setProperty('--backgroundc', 'antiquewhite');
+	document.documentElement.style.setProperty('--textc', 'black');
 }
 
 const wakeupmsg = [

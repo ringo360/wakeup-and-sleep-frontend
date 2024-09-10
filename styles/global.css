@@ -1,9 +1,19 @@
-html {
-    display: flex;
-    background-color: antiquewhite;
-    justify-content: center;
+:root {
+    --backgroundc: antiquewhite;
+    --textc: black;
 }
 
+html {
+    display: flex;
+    background-color: var(--backgroundc);
+    justify-content: center;
+    transition: background-color 0.5s ease;
+}
+
+body {
+    color: var(--textc);
+    transition: color 0.5s ease;
+}
 
 /* fuck off
 .header {
@@ -45,7 +55,7 @@ html {
 
 .graybtn {
     background: #797979;
-    color: white;
+    color: var(--textc);
 
 }
 
