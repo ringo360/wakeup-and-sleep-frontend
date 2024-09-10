@@ -90,6 +90,7 @@ async function sleep(x) {
     sleep_alr = true;
     // x.value = 'It works!'
 	sleeping = true;
+    showmsg(sleep_randomStr())
     await addList('sleep')
     x.textContent = '🌙'
     // x.textContent = '🌞'
@@ -107,6 +108,7 @@ async function wakeup(x) {
     }
     wakeup_alr = true;
 	sleeping = false;
+    showmsg(wakeup_randomStr())
     await addList('wakeup')
     // x.textContent = '🌙'
     x.textContent = '🌞'
@@ -141,6 +143,7 @@ async function breakfast(x) {
                 
 
             } else {
+                showmsg(breakfastmsg[Math.floor(Math.random() * breakfastmsg.length)])
                 launchFireworks(3000)
                 lastCheckbox.checked = true;
                 await postBreakfastBool(true)
