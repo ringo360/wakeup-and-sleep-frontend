@@ -12,7 +12,8 @@ html {
 }
 
 #slog {
-    color: var(--textc)
+    color: var(--textc);
+    transition: color 0.5s ease;
 }
 
 #black {

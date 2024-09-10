@@ -25,14 +25,38 @@ async function devfunc() {
 	//
 }
 
+let darkmode = false;
+
+async function ToggleDarkmodeCaller() {
+	if (darkmode) {
+		document.getElementById('ThemetoggleBtn').textContent = '🌙'
+	} else {
+		document.getElementById('ThemetoggleBtn').textContent = '☀'
+	}
+	ToggleDarkmode()
+}
+
+async function ToggleDarkmode() {
+	if (darkmode) {
+		document.documentElement.style.setProperty('--backgroundc', 'antiquewhite');
+		document.documentElement.style.setProperty('--textc', 'black');
+		darkmode = false;
+	} else {
+		document.documentElement.style.setProperty('--backgroundc', '#454545');
+		document.documentElement.style.setProperty('--textc', 'white');
+		darkmode = true;
+	}
+}
+
 async function launchFireworks(time) {
-	document.documentElement.style.setProperty('--backgroundc', '#454545');
-	document.documentElement.style.setProperty('--textc', 'white');
+	let shouldDarken = false;
+	if (!darkmode) shouldDarken = true;
+
+	if (shouldDarken) ToggleDarkmode()
     fireworks.start()
 	await wait(time)
 	fireworks.waitStop(true)
-	document.documentElement.style.setProperty('--backgroundc', 'antiquewhite');
-	document.documentElement.style.setProperty('--textc', 'black');
+	if (shouldDarken) ToggleDarkmode()
 }
 
 const wakeupmsg = [
