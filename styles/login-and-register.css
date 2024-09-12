@@ -34,6 +34,12 @@
         margin: 0;
         font-size: 3em;
     }
+    input[type=password] {
+        width: 100%;
+        padding: 0.5em 0.5em;
+        margin: 0;
+        font-size: 3em;
+    }
     label {
         width: 100%;
         max-width: 100%;
@@ -83,6 +89,10 @@
         font-size: 1.25em;
     }
     input[type=text] {
+        padding: 0.25em 0.25em;
+        font-size: 2.5em;
+    }
+    input[type=password] {
         padding: 0.25em 0.25em;
         font-size: 2.5em;
     }
