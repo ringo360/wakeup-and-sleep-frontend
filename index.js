@@ -87,7 +87,8 @@ function checkInputVal() {
 function isValidHour(hour) {
     const regex = /^[1-9]|1[0-9]|2[0-3]$/.test(hour);
     console.log(regex)
-    if (hour == '0') return true;
+    if (23 < hour) return false;
+    else if (hour == '0') return true;
     else if (regex) return true;
     else return false;
 }
@@ -95,7 +96,8 @@ function isValidHour(hour) {
 // 分の有効性チェック関数
 function isValidMinute(min) {
     const regex = /^[0-5][0-9]$/.test(min)
-    if (min == '0') return true;
+    if (59 < min) return false;
+    else if (min == '0') return true;
     else if (regex) return true;
     else return false;
 }
@@ -103,7 +105,8 @@ function isValidMinute(min) {
 // 秒の有効性チェック関数
 function isValidSecond(sec) {
     const regex = /^[0-5][0-9]$/.test(sec)
-    if (sec == '0') return true;
+    if (59 < sec) return false;
+    else if (sec == '0') return true;
     else if (regex) return true;
     else return false;
 }
