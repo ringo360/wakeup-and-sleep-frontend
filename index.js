@@ -66,6 +66,50 @@ async function initwakeupbtn() {
 
 function wait(time){return new Promise((resolve)=>{setTimeout(resolve, time)})}
 
+function checkInputVal() {
+    console.log('Checking input values');
+
+    const hour = document.getElementById('wakeuphr').value;
+    const min = document.getElementById('wakeupmin').value;
+    const sec = document.getElementById('wakeupsec').value;
+
+    // 時間の有効性チェック
+    if (isValidHour(hour) && isValidMinute(min) && isValidSecond(sec)) {
+        console.log('Valid time entered');
+        return true;
+    } else {
+        console.log('Invalid time entered');
+        return false;
+    }
+}
+
+// 時間の有効性チェック関数
+function isValidHour(hour) {
+    const regex = /^[1-9]|1[0-9]|2[0-3]$/.test(hour);
+    console.log(regex)
+    if (hour == '0') return true;
+    else if (regex) return true;
+    else return false;
+}
+
+// 分の有効性チェック関数
+function isValidMinute(min) {
+    const regex = /^[0-5][0-9]$/.test(min)
+    if (min == '0') return true;
+    else if (regex) return true;
+    else return false;
+}
+
+// 秒の有効性チェック関数
+function isValidSecond(sec) {
+    const regex = /^[0-5][0-9]$/.test(sec)
+    if (sec == '0') return true;
+    else if (regex) return true;
+    else return false;
+}
+
+
+
 async function fire(x) {
 	if (!can_fire) return;
     console.log(sleeping)
@@ -87,6 +131,9 @@ async function sleep(x) {
     if (sleep_alr === true) {
         return;
     }
+    if (!checkInputVal()) {
+        return showmsg('正しい時刻を入力してください!')
+    }
     sleep_alr = true;
     // x.value = 'It works!'
 	sleeping = true;
@@ -105,6 +152,9 @@ async function sleep(x) {
 async function wakeup(x) {
     if (wakeup_alr === true) {
         return;
+    }
+    if (!checkInputVal()) {
+        return showmsg('正しい時刻を入力してください!')
     }
     wakeup_alr = true;
 	sleeping = false;
@@ -157,7 +207,7 @@ async function breakfast(x) {
 
 async function postBreakfastBool(bool) {
     const token = await getAccToken();
-    const res = await getInfo(token);
+    const res = await getAPI(token, null, '/auth/info')
     if (!res.ok) {
         console.error('response is not ok, returning...');
         return;

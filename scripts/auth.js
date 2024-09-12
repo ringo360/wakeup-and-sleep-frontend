@@ -82,7 +82,7 @@ function goLogin() {
     location.href = '../login/index.html'
 }
 function isValidToken(cookie) {
-	const res = fetch(`${baseurl}/auth/info`, {
+	fetch(`${baseurl}/auth/info`, {
         method: 'GET',
         mode: 'cors',
         cache: "no-cache",
@@ -91,9 +91,27 @@ function isValidToken(cookie) {
             'X-Token': cookie,
 			
         },
-    })
-	if (res.ok) return true;
-	else return false;
+    }).then((res) => {
+		console.log(`STATUS: ${res.ok}(${res.status})`)
+		if (res.ok) {
+			return true;
+		} else {
+			return false;
+		}
+	})
+}
+
+const isValidToken_asPromise = (c) => new Promise(resolve => {
+    resolve(isValidToken(c));
+});
+
+async function isValidToken_asPromise_Caller(c) {
+    try {
+        const result = await isValidToken_asPromise(c);
+		return result
+    } catch (e) {
+        console.error('Error:', e);
+    }
 }
 
 async function getAccToken() {
@@ -101,7 +119,9 @@ async function getAccToken() {
         .split("; ")
         .find((row) => row.startsWith(`AccT=`))
         ?.split("=")[1];
-	if (!isValidToken(cookieValue)) {
+	const acc_ok = await isValidToken_asPromise_Caller(cookieValue)
+	console.log(acc_ok)
+	if (!acc_ok) {
 		console.warn('Token is not valid. regenerating..')
 		const acc_json = await fetch_accToken()
         document.cookie = `AccT=${acc_json.t}; path=/`
