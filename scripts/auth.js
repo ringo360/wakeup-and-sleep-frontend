@@ -92,7 +92,6 @@ function isValidToken(cookie) {
 			
         },
     }).then((res) => {
-		console.log(`STATUS: ${res.ok}(${res.status})`)
 		if (res.ok) {
 			return true;
 		} else {
@@ -105,21 +104,12 @@ const isValidToken_asPromise = (c) => new Promise(resolve => {
     resolve(isValidToken(c));
 });
 
-async function isValidToken_asPromise_Caller(c) {
-    try {
-        const result = await isValidToken_asPromise(c);
-		return result
-    } catch (e) {
-        console.error('Error:', e);
-    }
-}
-
 async function getAccToken() {
     const cookieValue = document.cookie
         .split("; ")
         .find((row) => row.startsWith(`AccT=`))
         ?.split("=")[1];
-	const acc_ok = await isValidToken_asPromise_Caller(cookieValue)
+	const acc_ok = await isValidToken_asPromise(cookieValue)
 	console.log(acc_ok)
 	if (!acc_ok) {
 		console.warn('Token is not valid. regenerating..')
