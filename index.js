@@ -67,48 +67,46 @@ async function initwakeupbtn() {
 function wait(time){return new Promise((resolve)=>{setTimeout(resolve, time)})}
 
 function checkInputVal() {
-    console.log('Checking input values');
+    let hour = document.getElementById('wakeuphr').value.trim();
+    let min = document.getElementById('wakeupmin').value.trim();
+    let sec = document.getElementById('wakeupsec').value.trim();
 
-    const hour = document.getElementById('wakeuphr').value;
-    const min = document.getElementById('wakeupmin').value;
-    const sec = document.getElementById('wakeupsec').value;
+    // 整数チェック関数
+    function isInteger(str) {
+        return /^\d+$/.test(str);
+    }
 
-    // 時間の有効性チェック
-    if (isValidHour(hour) && isValidMinute(min) && isValidSecond(sec)) {
-        console.log('Valid time entered');
-        return true;
-    } else {
-        console.log('Invalid time entered');
+    // 時間の有効性チェック関数
+    function isValidHour(hour) {
+        return isInteger(hour) && hour >= 0 && hour <= 23;
+    }
+
+    function isValidMinute(min) {
+        return isInteger(min) && min >= 0 && min <= 59;
+    }
+
+    function isValidSecond(sec) {
+        return isInteger(sec) && sec >= 0 && sec <= 59;
+    }
+
+    // 入力値チェック
+    if (!isValidHour(hour)) {
+        showmsg('正しい時刻を入力してください! 時間は0~23の整数で入力してください。');
         return false;
     }
-}
 
-// 時間の有効性チェック関数
-function isValidHour(hour) {
-    const regex = /^[1-9]|1[0-9]|2[0-3]$/.test(hour);
-    console.log(regex)
-    if (23 < hour) return false;
-    else if (hour == '0') return true;
-    else if (regex) return true;
-    else return false;
-}
+    if (!isValidMinute(min)) {
+        showmsg('正しい分を入力してください! 分は0~59の整数で入力してください。');
+        return false;
+    }
 
-// 分の有効性チェック関数
-function isValidMinute(min) {
-    const regex = /^[0-5][0-9]$/.test(min)
-    if (59 < min) return false;
-    else if (min == '0') return true;
-    else if (regex) return true;
-    else return false;
-}
+    if (!isValidSecond(sec)) {
+        showmsg('正しい秒を入力してください! 秒は0~59の整数で入力してください。');
+        return false;
+    }
 
-// 秒の有効性チェック関数
-function isValidSecond(sec) {
-    const regex = /^[0-5][0-9]$/.test(sec)
-    if (59 < sec) return false;
-    else if (sec == '0') return true;
-    else if (regex) return true;
-    else return false;
+    console.log(`Valid time entered: ${hour}:${min}:${sec}`);
+	return true;
 }
 
 
@@ -283,7 +281,6 @@ async function addList(mode) {
             await postSleepData(token, json.res.user, fullDate, mode);
         }
     } else {
-        // この部分は `sleeping` が `true` の場合の処理です。もし不要なら削除してください。
         if (existingRow) {
             // 既存の行を更新
 			console.log(existingRow.cells)
