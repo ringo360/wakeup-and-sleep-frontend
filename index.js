@@ -262,7 +262,7 @@ async function addList(mode) {
             const json = await res.json();
             await postSleepData(token, json.res.user, fullDate, mode);
         } else {
-            // 新しい行を��加
+            // 新しい行を追加
             table.insertAdjacentHTML('beforeend', 
                 `<tr>
                     <td>${today}</td>
@@ -304,7 +304,7 @@ async function addList(mode) {
                 </tr>`
             );
 			shouldRemove()
-            // APIにデー���������を送信
+            // APIにデータを送信
             const token = await getAccToken();
             const res = await getInfo(token);
             if (!res.ok) {
@@ -385,7 +385,7 @@ async function fetchSleepData() {
     return !isNaN(date.getTime()) && date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
   }
 
-  // 日付が有効なものだ��をフィルタリング
+  // 日付が有効なものだけをフィルタリング
   const validData = data.filter(item => {
     return isValidDate(item.sleepdate) || isValidDate(item.wakeupdate);
   });
