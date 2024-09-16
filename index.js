@@ -262,7 +262,7 @@ async function addList(mode) {
             const json = await res.json();
             await postSleepData(token, json.res.user, fullDate, mode);
         } else {
-            // 新しい行を追加
+            // 新しい行を��加
             table.insertAdjacentHTML('beforeend', 
                 `<tr>
                     <td>${today}</td>
@@ -432,13 +432,16 @@ async function fetchSleepData() {
 
   // 合計データを計算
   const aggregatedData = Object.entries(groupedData).map(([dateKey, item]) => {
-    const sleepEvent = item.sleepEvents.find(e => e !== null);
-    const wakeEvent = item.wakeEvents.find(e => e !== null);
+    const sleepEventsReversed = [...item.sleepEvents].reverse();
+    const wakeEventsReversed = [...item.wakeEvents].reverse();
+
+    const sleepTime = sleepEventsReversed.find(e => e !== null);
+    const wakeTime = wakeEventsReversed.find(e => e !== null);
 
     return {
       date: dateKey,
-      sleepTime: sleepEvent ? new Date(sleepEvent) : null,
-      wakeTime: wakeEvent ? new Date(wakeEvent) : null,
+      sleepTime: sleepTime ? new Date(sleepTime) : null,
+      wakeTime: wakeTime ? new Date(wakeTime) : null,
       sleepCount: item.sleepEvents.length,
       wakeCount: item.wakeEvents.length
     };
