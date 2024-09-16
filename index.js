@@ -431,14 +431,18 @@ async function fetchSleepData() {
   console.log('Grouped data:', groupedData);
 
   // 合計データを計算
-  const aggregatedData = Object.entries(groupedData).map(([dateKey, item]) => ({
-    date: dateKey,
-    sleepTime: item.sleepEvents.length > 0 ? item.sleepEvents.sort((a, b) => a - b)[0] : null,
-    wakeTime: item.wakeEvents.length > 0 ? item.wakeEvents.sort((a, b) => a - b)[0] : null,
-    sleepCount: item.sleepEvents.length,
-    wakeCount: item.wakeEvents.length
-  }));
+  const aggregatedData = Object.entries(groupedData).map(([dateKey, item]) => {
+    const sleepEvent = item.sleepEvents.find(e => e !== null);
+    const wakeEvent = item.wakeEvents.find(e => e !== null);
 
+    return {
+      date: dateKey,
+      sleepTime: sleepEvent ? new Date(sleepEvent) : null,
+      wakeTime: wakeEvent ? new Date(wakeEvent) : null,
+      sleepCount: item.sleepEvents.length,
+      wakeCount: item.wakeEvents.length
+    };
+  });
   console.log('Aggregated data:', aggregatedData);
 
   // テーブル更新
