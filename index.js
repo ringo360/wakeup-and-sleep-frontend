@@ -71,22 +71,22 @@ function checkInputVal() {
     let min = document.getElementById('wakeupmin').value.trim();
     let sec = document.getElementById('wakeupsec').value.trim();
 
-    // 整数チェック関数
-    function isInteger(str) {
-        return /^\d+$/.test(str);
+    // 整数チェック関数（2桁まで）
+    function isValidInteger(str) {
+        return /^\d{1,2}$/.test(str);
     }
 
     // 時間の有効性チェック関数
     function isValidHour(hour) {
-        return isInteger(hour) && hour >= 0 && hour <= 23;
+        return isValidInteger(hour) && parseInt(hour) >= 0 && parseInt(hour) <= 23;
     }
 
     function isValidMinute(min) {
-        return isInteger(min) && min >= 0 && min <= 59;
+        return isValidInteger(min) && parseInt(min) >= 0 && parseInt(min) <= 59;
     }
 
     function isValidSecond(sec) {
-        return isInteger(sec) && sec >= 0 && sec <= 59;
+        return isValidInteger(sec) && parseInt(sec) >= 0 && parseInt(sec) <= 59;
     }
 
     // 入力値チェック
