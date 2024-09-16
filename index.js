@@ -91,17 +91,14 @@ function checkInputVal() {
 
     // 入力値チェック
     if (!isValidHour(hour)) {
-        showmsg('正しい時刻を入力してください! 時間は0~23の整数で入力してください。');
         return false;
     }
 
     if (!isValidMinute(min)) {
-        showmsg('正しい分を入力してください! 分は0~59の整数で入力してください。');
         return false;
     }
 
     if (!isValidSecond(sec)) {
-        showmsg('正しい秒を入力してください! 秒は0~59の整数で入力してください。');
         return false;
     }
 
