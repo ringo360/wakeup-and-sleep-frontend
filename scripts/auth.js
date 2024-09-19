@@ -1,6 +1,8 @@
 console.log('Called auth.js')
 
-const baseurl = 'https://was-api.a1z.uk'
+//*It will move on consts.js
+const baseurl = 'https://was-api-alt.a1z.uk'
+// const baseurl = 'https://was-api.a1z.uk'
 //const baseurl = 'https://p-dev.ringoxd.dev'
 let fail =0;
 
@@ -13,6 +15,8 @@ function indexReady() {
 async function main() {
     const cookie = await getAccToken()
     const res = await getInfo(cookie)
+	console.log(await res.json())
+
     
     if (res.status !== 200) {
         fail++;
@@ -73,15 +77,16 @@ async function append(x, is) {
 	}
     const elem = document.getElementById('user')
     if (is === true) {
-        elem.insertAdjacentHTML('afterbegin', `<p>${x} | <a onclick="logout()">Logout</a></p>`)
+        elem.insertAdjacentHTML('afterbegin', `<p>${x} | <a onclick="logout()">ログアウト</a></p>`)
     } else {
-        elem.insertAdjacentHTML('afterbegin', `<p><a href='../login/index.html'>Login</a></p>`)
+        elem.insertAdjacentHTML('afterbegin', `<p><a href='../login/index.html'>ログイン</a></p>`)
     }
 }
 function goLogin() {
     location.href = '../login/index.html'
 }
 function isValidToken(cookie) {
+	console.log(`[isValid] C: ${cookie}`)
 	fetch(`${baseurl}/auth/info`, {
         method: 'GET',
         mode: 'cors',
@@ -92,6 +97,7 @@ function isValidToken(cookie) {
 			
         },
     }).then((res) => {
+		console.log(res.ok)
 		if (res.ok) {
 			return true;
 		} else {
@@ -100,16 +106,29 @@ function isValidToken(cookie) {
 	})
 }
 
-const isValidToken_asPromise = (c) => new Promise(resolve => {
-    resolve(isValidToken(c));
-});
+async function isValidTokenSync(cookie) {
+	console.log(`[isValid] C: ${cookie}`)
+	const res = await fetch(`${baseurl}/auth/info`, {
+        method: 'GET',
+        mode: 'cors',
+        cache: "no-cache",
+        headers: {
+            'User-Agent': 'WakeApp/1.0',
+            'X-Token': cookie,
+			
+        },
+    })
+	if (res.ok) return true;
+	else return false;
+}
+
 
 async function getAccToken() {
     const cookieValue = document.cookie
         .split("; ")
         .find((row) => row.startsWith(`AccT=`))
         ?.split("=")[1];
-	const acc_ok = await isValidToken_asPromise(cookieValue)
+	const acc_ok = await isValidTokenSync(cookieValue)
 	console.log(acc_ok)
 	if (!acc_ok) {
 		console.warn('Token is not valid. regenerating..')
