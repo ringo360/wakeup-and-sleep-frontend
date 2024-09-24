@@ -4,8 +4,17 @@
 
 バックエンドのコードはこのリポジトリとは異なります。[こちら](https://github.com/ringo360/wakeup-and-sleep-app)から閲覧できます。
 
-## 開発用
+# 導入
+
+## (1)稼働中のWebサーバーに設置する
+
+NginxやApatche2などを利用している場合は、そこに設置してください。(`/var/www/`内など)
+
+## (2)http-serverを利用する
+
+> Node.jsが導入されている必要があります。
 ```
 npm i -g http-server
-http-server
+http-server -p 8080
 ```
+> -p オプションでポート8080番を使用するよう指示しています。必要に応じて変更してください。
